@@ -1,14 +1,19 @@
 """
-ipythonblocks.BlockGrid is a class that displays a colored grid in the
+BlockGrid is a class that displays a colored grid in the
 IPython Notebook. The colors can be manipulated, making it useful for
 practicing control flow stuctures and quickly seeing the results.
+
+See the IPython Notebook at https://gist.github.com/4499453 for a demo.
 
 """
 
 import copy
+import itertools
 import numbers
 
-from IPython.display import HTML
+from operator import iadd
+
+from IPython.display import HTML, display
 
 __all__ = ['Block', 'BlockGrid', 'InvalidColorSpec']
 
@@ -17,6 +22,12 @@ _TABLE = '<table><tbody>{0}</tbody></table>'
 _TR = '<tr>{0}</tr>'
 _TD = ('<td style="width: 10px; height: 10px;'
        ' border: 1px solid white; background-color: {0};"></td>')
+
+
+_SINGLE_ITEM = 'single item'
+_SINGLE_ROW = 'single row'
+_ROW_SLICE = 'row slice'
+_DOUBLE_SLICE = 'double slice'
 
 
 class InvalidColorSpec(Exception):
@@ -45,7 +56,8 @@ class Block(object):
 
         """
         if not isinstance(value, numbers.Number):
-            raise InvalidColorSpec('value must be a number.')
+            s = 'value must be a number. got {0}.'.format(value)
+            raise InvalidColorSpec(s)
 
         return min(255, max(0, value))
 
@@ -75,6 +87,24 @@ class Block(object):
     def blue(self, value):
         value = self.check_value(value)
         self._blue = value
+
+    def set_colors(self, color_tuple):
+        """
+        Updated colors from a tuple of RGB integers.
+
+        Parameters
+        ----------
+        color_tuple : tuple of int
+            Tuple containing integers of (red, green, blue) values.
+
+        """
+        if len(color_tuple) != 3:
+            s = 'color_tuple must have three integers. got {0}.'
+            raise ValueError(s.format(color_tuple))
+
+        self.red = color_tuple[0]
+        self.green = color_tuple[1]
+        self.blue = color_tuple[2]
 
     @property
     def td(self):
@@ -116,47 +146,99 @@ class BlockGrid(object):
     def __init__(self, width, height, fill=(0, 0, 0)):
         self.width = width
         self.height = height
-        self._initialize_arrays(fill)
+        self._initialize_grid(fill)
 
-    def _initialize_arrays(self, fill):
-        grid = []
-
-        for _ in xrange(self.height):
-            grid.append([])
-
-            for _ in xrange(self.width):
-                grid[-1].append(Block(*fill))
+    def _initialize_grid(self, fill):
+        grid = [[Block(*fill) for _ in xrange(self.width)]
+                for _ in xrange(self.height)]
 
         self._grid = grid
 
-    def __getitem__(self, index):
-        if isinstance(index, tuple):
+    @classmethod
+    def _view_from_grid(cls, grid):
+        """
+        Make a new BlockGrid from a list of lists of Block objects.
+
+        """
+        new_width = len(grid[0])
+        new_height = len(grid)
+
+        new_BG = cls(new_width, new_height)
+        new_BG._grid = grid
+
+        return new_BG
+
+    @staticmethod
+    def _categorize_index(index):
+        """
+        Used by __getitem__ and __setitem__ to determine whether the user
+        is asking for a single item, single row, or some kind of slice.
+
+        """
+        if isinstance(index, int):
+            return _SINGLE_ROW
+
+        elif isinstance(index, slice):
+            return _ROW_SLICE
+
+        elif isinstance(index, tuple):
             if len(index) not in (1, 2):
                 s = 'Invalid index, too many dimensions.'
                 raise IndexError(s)
 
-            if isinstance(index[0], slice) or isinstance(index[1], slice):
-                return self._get_slice(index)
+            if isinstance(index[0], slice):
+                if isinstance(index[1], (int, slice)):
+                    return _DOUBLE_SLICE
 
-            for i in index:
-                if not isinstance(i, int):
-                    s = 'Indices must be integers.'
-                    raise IndexError(s)
+            if isinstance(index[1], slice):
+                if isinstance(index[0], (int, slice)):
+                    return _DOUBLE_SLICE
 
-            if len(index) == 1:
-                return self._grid[index[0]]
-            else:
-                return self._grid[index[0]][index[1]]
+            elif isinstance(index[0], int) and isinstance(index[0], int):
+                return _SINGLE_ITEM
 
-        elif isinstance(index, int):
+        raise IndexError('Invalid index.')
+
+    def __getitem__(self, index):
+        ind_cat = self._categorize_index(index)
+
+        if ind_cat == _SINGLE_ROW:
             return self._grid[index]
 
-        else:
-            raise IndexError('Invalid index.')
+        elif ind_cat == _SINGLE_ITEM:
+            return self._grid[index[0]][index[1]]
 
-    def _get_slice(self, index):
-        sl_width = index[0]
-        sl_height = index[1]
+        elif ind_cat == _ROW_SLICE:
+            return BlockGrid._view_from_grid(self._grid[index])
+
+        elif ind_cat == _DOUBLE_SLICE:
+            new_grid = self._get_double_slice(index)
+            return BlockGrid._view_from_grid(new_grid)
+
+    def __setitem__(self, index, value):
+        ind_cat = self._categorize_index(index)
+
+        if ind_cat == _SINGLE_ROW:
+            map(Block.set_colors, self._grid[index],
+                itertools.repeat(value, len(self._grid[index])))
+
+        elif ind_cat == _SINGLE_ITEM:
+            self._grid[index[0]][index[1]].set_colors(value)
+
+        else:
+            if ind_cat == _ROW_SLICE:
+                sub_grid = self._grid[index]
+
+            elif ind_cat == _DOUBLE_SLICE:
+                sub_grid = self._get_double_slice(index)
+
+            nblocks = len(sub_grid) * len(sub_grid[0])
+            map(Block.set_colors, itertools.chain(*sub_grid),
+                itertools.repeat(value, nblocks))
+
+    def _get_double_slice(self, index):
+        sl_height = index[0]
+        sl_width = index[1]
 
         if isinstance(sl_width, int):
             sl_width = slice(sl_width, sl_width + 1)
@@ -167,30 +249,25 @@ class BlockGrid(object):
         rows = self._grid[sl_height]
         grid = [r[sl_width] for r in rows]
 
-        new_width = len(grid[0])
-        new_height = len(grid)
-
-        new_BG = BlockGrid(new_width, new_height)
-        new_BG._grid = copy.deepcopy(grid)
-
-        return new_BG
+        return grid
 
     def _repr_html_(self):
-        html = ''
-
-        for row in self._grid:
-            tr = ''
-
-            for block in row:
-                tr += block.td
-
-            html += _TR.format(tr)
+        html = reduce(iadd,
+                      (_TR.format(reduce(iadd, (block.td for block in row)))
+                       for row in self._grid))
 
         return _TABLE.format(html)
 
-    def show(self):
+    def copy(self):
         """
-        Display blocks as an HTML table.
+        Returns an independent copy of this BlockGrid.
 
         """
-        return HTML(self._repr_html_())
+        return copy.deepcopy(self)
+
+    def show(self):
+        """
+        Display colored grid as an HTML table.
+
+        """
+        return display(HTML(self._repr_html_()))
