@@ -147,6 +147,12 @@ class Block(object):
         rgb = 'rgb({0}, {1}, {2})'.format(self._red, self._green, self._blue)
         return _TD.format(rgb)
 
+    def _repr_html_(self):
+        return _TABLE.format(_TR.format(self.td))
+
+    def show(self):
+        display(HTML(self._repr_html_()))
+
     def __str__(self):
         s = ['Block',
              'Color: ({0}, {1}, {2})'.format(self._red,
@@ -337,4 +343,4 @@ class BlockGrid(object):
         Display colored grid as an HTML table.
 
         """
-        return display(HTML(self._repr_html_()))
+        display(HTML(self._repr_html_()))
