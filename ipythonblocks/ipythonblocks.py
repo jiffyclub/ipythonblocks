@@ -170,12 +170,15 @@ class BlockGrid(object):
         Number of squares wide to make the grid.
     height : int
         Number of squares high to make the grid.
+    shape : tuple of int
+        A tuple of (width, height).
+
 
     """
 
     def __init__(self, width, height, fill=(0, 0, 0)):
-        self.width = width
-        self.height = height
+        self._width = width
+        self._height = height
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
@@ -183,6 +186,18 @@ class BlockGrid(object):
                 for row in xrange(self.height)]
 
         self._grid = grid
+
+    @property
+    def width(self):
+        return self._width
+
+    @property
+    def height(self):
+        return self._height
+
+    @property
+    def shape(self):
+        return (self._width, self._height)
 
     @classmethod
     def _view_from_grid(cls, grid):
