@@ -11,6 +11,7 @@ practicing control flow stuctures and quickly seeing the results.
 import copy
 import itertools
 import numbers
+import os
 
 from operator import iadd
 
@@ -145,6 +146,18 @@ class Block(object):
         """
         rgb = 'rgb({0}, {1}, {2})'.format(self._red, self._green, self._blue)
         return _TD.format(rgb)
+
+    def __str__(self):
+        s = ['Block',
+             'Color: ({0}, {1}, {2})'.format(self._red,
+                                             self._green,
+                                             self._blue)]
+
+        # add position information if we have it
+        if self._row is not None:
+            s[0] += ' ({0}, {1})'.format(self._row, self._col)
+
+        return os.linesep.join(s)
 
 
 class BlockGrid(object):
@@ -305,6 +318,12 @@ class BlockGrid(object):
                        for row in self._grid))
 
         return _TABLE.format(html)
+
+    def __str__(self):
+        s = ['BlockGrid',
+             'Shape: {0}'.format(self.shape)]
+
+        return os.linesep.join(s)
 
     def copy(self):
         """
