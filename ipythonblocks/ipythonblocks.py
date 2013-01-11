@@ -5,6 +5,9 @@ practicing control flow stuctures and quickly seeing the results.
 
 """
 
+# This file is copyright 2013 by Matt Davis and covered by the license at
+# https://github.com/jiffyclub/ipythonblocks/blob/master/LICENSE.txt
+
 import copy
 import itertools
 import numbers
