@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(name='ipythonblocks',
       version='1.0',
-      description='Practice programming with colored grids in the IPython Notebook',
+      description='Practice Python with colored grids in the IPython Notebook',
       author='Matt Davis',
       author_email='jiffyclub@gmail.com',
       url='https://github.com/jiffyclub/ipythonblocks/',
