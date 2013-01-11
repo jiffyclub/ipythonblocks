@@ -11,4 +11,7 @@ and immediately see the effects of their code represented in a colorful,
 attractive way. `BlockGrid` objects can be indexed and sliced like 2D NumPy
 arrays making them good practice for learning how to access arrays.
 
+See the [demo notebook][demo] for more on using `ipythonblocks`.
+
 [IPython]: http://ipython.org
+[demo]: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/ipythonblocks_demo.ipynb
