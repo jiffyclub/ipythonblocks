@@ -7,4 +7,4 @@ practicing control flow stuctures and quickly seeing the results.
 
 from .ipythonblocks import *
 
-__version__ = '1.0'
+__version__ = '1.1dev'
