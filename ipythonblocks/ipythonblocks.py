@@ -27,8 +27,8 @@ __all__ = ('Block', 'BlockGrid', 'InvalidColorSpec')
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
 _TR = '<tr>{0}</tr>'
-_TD = ('<td style="width: 10px; height: 10px;'
-       ' border: 1px solid white; background-color: {0};"></td>')
+_TD = ('<td style="width: 20px; height: 20px; padding: 0px;'
+       'border: 1px solid white; background-color: {0};"></td>')
 
 
 _SINGLE_ITEM = 'single item'
