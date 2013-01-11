@@ -7,6 +7,8 @@ See the IPython Notebook at https://gist.github.com/4499453 for a demo.
 
 """
 
+__version__ = '1.0'
+
 import copy
 import itertools
 import numbers
