@@ -1,13 +1,9 @@
 """
-BlockGrid is a class that displays a colored grid in the
+ipythonblocks provides a BlockGrid class that displays a colored grid in the
 IPython Notebook. The colors can be manipulated, making it useful for
 practicing control flow stuctures and quickly seeing the results.
 
-See the IPython Notebook at https://gist.github.com/4499453 for a demo.
-
 """
-
-__version__ = '1.0'
 
 import copy
 import itertools
@@ -17,7 +13,7 @@ from operator import iadd
 
 from IPython.display import HTML, display
 
-__all__ = ['Block', 'BlockGrid', 'InvalidColorSpec']
+__all__ = ('Block', 'BlockGrid', 'InvalidColorSpec')
 
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
