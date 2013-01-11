@@ -16,6 +16,11 @@ from operator import iadd
 
 from IPython.display import HTML, display
 
+import sys
+if sys.version_info[0] >= 3:
+    xrange = range
+    from functools import reduce
+
 __all__ = ('Block', 'BlockGrid', 'InvalidColorSpec')
 
 
