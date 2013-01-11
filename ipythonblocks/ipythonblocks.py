@@ -46,17 +46,34 @@ class InvalidColorSpec(Exception):
 
 class Block(object):
     """
-    A class with .red, .green, and .blue attributes.
+    A colored square.
+
+    Parameters
+    ----------
+    red, green, blue : int
+        Integers on the range [0 - 255].
+    row, col : int, optional
+        The zero-based grid position of this `Block`.
+
+    Attributes
+    ----------
+    red, green, blue : int
+        The color values for this `Block`. The color of the `Block` can be
+        updated by assigning new values to these attributes.
+    row, col : int
+        The zero-based grid position of this `Block`.
 
     """
 
-    def __init__(self, red, green, blue):
+    def __init__(self, red, green, blue, row=None, col=None):
         self.red = red
         self.green = green
         self.blue = blue
+        self._row = row
+        self._col = col
 
     @staticmethod
-    def check_value(value):
+    def _check_value(value):
         """
         Check that a value is a number and constrain it to [0 - 255].
 
@@ -73,7 +90,7 @@ class Block(object):
 
     @red.setter
     def red(self, value):
-        value = self.check_value(value)
+        value = self._check_value(value)
         self._red = value
 
     @property
@@ -82,7 +99,7 @@ class Block(object):
 
     @green.setter
     def green(self, value):
-        value = self.check_value(value)
+        value = self._check_value(value)
         self._green = value
 
     @property
@@ -91,8 +108,16 @@ class Block(object):
 
     @blue.setter
     def blue(self, value):
-        value = self.check_value(value)
+        value = self._check_value(value)
         self._blue = value
+
+    @property
+    def row(self):
+        return self._row
+
+    @property
+    def col(self):
+        return self._col
 
     def set_colors(self, color_tuple):
         """
@@ -115,8 +140,7 @@ class Block(object):
     @property
     def td(self):
         """
-        Return the HTML of a table cell with the background
-        color of this Block.
+        The HTML for a table cell with the background color of this Block.
 
         """
         rgb = 'rgb({0}, {1}, {2})'.format(self._red, self._green, self._blue)
@@ -155,8 +179,8 @@ class BlockGrid(object):
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
-        grid = [[Block(*fill) for _ in xrange(self.width)]
-                for _ in xrange(self.height)]
+        grid = [[Block(*fill, row=row, col=col) for col in xrange(self.width)]
+                for row in xrange(self.height)]
 
         self._grid = grid
 
@@ -256,6 +280,9 @@ class BlockGrid(object):
         grid = [r[sl_width] for r in rows]
 
         return grid
+
+    def __iter__(self):
+        return itertools.chain(*self._grid)
 
     def _repr_html_(self):
         html = reduce(iadd,
