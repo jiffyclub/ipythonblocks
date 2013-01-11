@@ -120,23 +120,19 @@ class Block(object):
     def col(self):
         return self._col
 
-    def set_colors(self, color_tuple):
+    def set_colors(self, red, green, blue):
         """
-        Updated colors from a tuple of RGB integers.
+        Updated block colors.
 
         Parameters
         ----------
-        color_tuple : tuple of int
-            Tuple containing integers of (red, green, blue) values.
+        red, green, blue : int
+            Integers on the range [0 - 255].
 
         """
-        if len(color_tuple) != 3:
-            s = 'color_tuple must have three integers. got {0}.'
-            raise ValueError(s.format(color_tuple))
-
-        self.red = color_tuple[0]
-        self.green = color_tuple[1]
-        self.blue = color_tuple[2]
+        self.red = red
+        self.green = green
+        self.blue = blue
 
     @property
     def td(self):
@@ -280,14 +276,17 @@ class BlockGrid(object):
             return BlockGrid._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
+        if len(value) != 3:
+            s = 'Assigned value must have three integers. got {0}.'
+            raise ValueError(s.format(value))
+
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
-            map(Block.set_colors, self._grid[index],
-                itertools.repeat(value, len(self._grid[index])))
+            map(lambda b: b.set_colors(*value), self._grid[index])
 
         elif ind_cat == _SINGLE_ITEM:
-            self._grid[index[0]][index[1]].set_colors(value)
+            self._grid[index[0]][index[1]].set_colors(*value)
 
         else:
             if ind_cat == _ROW_SLICE:
@@ -296,9 +295,7 @@ class BlockGrid(object):
             elif ind_cat == _DOUBLE_SLICE:
                 sub_grid = self._get_double_slice(index)
 
-            nblocks = len(sub_grid) * len(sub_grid[0])
-            map(Block.set_colors, itertools.chain(*sub_grid),
-                itertools.repeat(value, nblocks))
+            map(lambda b: b.set_colors(*value), itertools.chain(*sub_grid))
 
     def _get_double_slice(self, index):
         sl_height = index[0]
