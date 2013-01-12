@@ -1,7 +1,7 @@
 v 1.1
 =====
 
-* Python 3 support
+* Python 3 support (thanks to Thomas Kluyver)
 * ``for block in grid`` style iteration
 * ``Block`` now has an HTML representation for displaying individual blocks
 * ``__str__`` methods on ``Block`` and ``BlockGrid``
