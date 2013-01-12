@@ -22,15 +22,14 @@ if sys.version_info[0] >= 3:
     xrange = range
     from functools import reduce
 
-__all__ = ('Block', 'BlockGrid', 'InvalidColorSpec')
-
+__all__ = ('Block', 'BlockGrid', 'InvalidColorSpec', '__version__')
+__version__ = '1.1'
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
 _TR = '<tr>{0}</tr>'
 _TD = ('<td style="width: {0}px; height: {0}px; padding: 0px;'
        'border: 1px solid white; background-color: {1};"></td>')
 _RGB = 'rgb({0}, {1}, {2})'
-
 
 _SINGLE_ITEM = 'single item'
 _SINGLE_ROW = 'single row'
