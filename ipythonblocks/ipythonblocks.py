@@ -68,7 +68,8 @@ class Block(object):
     row, col : int
         The zero-based grid position of this `Block`.
     size : int
-        Length of the sides of this block in pixels.
+        Length of the sides of this block in pixels. The block size can be
+        changed by modifying this attribute. Note that one is the lower limit.
 
     """
 
@@ -78,7 +79,7 @@ class Block(object):
         self.blue = blue
         self._row = row
         self._col = col
-        self._size = max(_SMALLEST_BLOCK, size)
+        self.size = size
 
     @staticmethod
     def _check_value(value):
@@ -130,6 +131,10 @@ class Block(object):
     @property
     def size(self):
         return self._size
+
+    @size.setter
+    def size(self, size):
+        self._size = max(_SMALLEST_BLOCK, size)
 
     def set_colors(self, red, green, blue):
         """
@@ -209,7 +214,7 @@ class BlockGrid(object):
     def __init__(self, width, height, fill=(0, 0, 0), block_size=20):
         self._width = width
         self._height = height
-        self._block_size = max(_SMALLEST_BLOCK, block_size)
+        self._block_size = block_size
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
@@ -237,10 +242,10 @@ class BlockGrid(object):
 
     @block_size.setter
     def block_size(self, size):
-        size = max(_SMALLEST_BLOCK, size)
+        self._block_size = size
 
         for block in self:
-            block._size = size
+            block.size = size
 
     @classmethod
     def _view_from_grid(cls, grid):

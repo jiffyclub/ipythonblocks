@@ -2,6 +2,7 @@ v 1.1.1
 =======
 
 * convert assigned floating point numbers to integers for HTML compatibility
+* added the ability to change the size of individual blocks
 
 v 1.1
 =====
