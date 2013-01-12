@@ -90,7 +90,7 @@ class Block(object):
             s = 'value must be a number. got {0}.'.format(value)
             raise InvalidColorSpec(s)
 
-        return min(255, max(0, value))
+        return int(round(min(255, max(0, value))))
 
     @property
     def red(self):
