@@ -27,14 +27,17 @@ __all__ = ('Block', 'BlockGrid', 'InvalidColorSpec')
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
 _TR = '<tr>{0}</tr>'
-_TD = ('<td style="width: 20px; height: 20px; padding: 0px;'
-       'border: 1px solid white; background-color: {0};"></td>')
+_TD = ('<td style="width: {0}px; height: {0}px; padding: 0px;'
+       'border: 1px solid white; background-color: {1};"></td>')
+_RGB = 'rgb({0}, {1}, {2})'
 
 
 _SINGLE_ITEM = 'single item'
 _SINGLE_ROW = 'single row'
 _ROW_SLICE = 'row slice'
 _DOUBLE_SLICE = 'double slice'
+
+_SMALLEST_BLOCK = 1
 
 
 class InvalidColorSpec(Exception):
@@ -55,6 +58,8 @@ class Block(object):
         Integers on the range [0 - 255].
     row, col : int, optional
         The zero-based grid position of this `Block`.
+    size : int, optional
+        Length of the sides of this block in pixels. One is the lower limit.
 
     Attributes
     ----------
@@ -63,15 +68,18 @@ class Block(object):
         updated by assigning new values to these attributes.
     row, col : int
         The zero-based grid position of this `Block`.
+    size : int
+        Length of the sides of this block in pixels.
 
     """
 
-    def __init__(self, red, green, blue, row=None, col=None):
+    def __init__(self, red, green, blue, row=None, col=None, size=20):
         self.red = red
         self.green = green
         self.blue = blue
         self._row = row
         self._col = col
+        self._size = max(_SMALLEST_BLOCK, size)
 
     @staticmethod
     def _check_value(value):
@@ -120,6 +128,10 @@ class Block(object):
     def col(self):
         return self._col
 
+    @property
+    def size(self):
+        return self._size
+
     def set_colors(self, red, green, blue):
         """
         Updated block colors.
@@ -140,8 +152,8 @@ class Block(object):
         The HTML for a table cell with the background color of this Block.
 
         """
-        rgb = 'rgb({0}, {1}, {2})'.format(self._red, self._green, self._blue)
-        return _TD.format(rgb)
+        rgb = _RGB.format(self._red, self._green, self._blue)
+        return _TD.format(self._size, rgb)
 
     def _repr_html_(self):
         return _TABLE.format(_TR.format(self.td))
@@ -164,40 +176,46 @@ class Block(object):
 
 class BlockGrid(object):
     """
-    A grid of squares whose colors can be individually controlled.
+    A grid of blocks whose colors can be individually controlled.
 
-    Individual squares have a width and height of 10 screen pixels.
+    Individual blocks have a width and height of 10 screen pixels.
     To get the second Block in the third row use block = grid[1, 2].
 
     Parameters
     ----------
     width : int
-        Number of squares wide to make the grid.
+        Number of blocks wide to make the grid.
     height : int
-        Number of squares high to make the grid.
+        Number of blocks high to make the grid.
     fill : tuple of int, optional
         An optional initial color for the grid, defaults to black.
         Specified as a tuple of (red, green, blue). E.g.: (10, 234, 198)
+    block_size : int, optional
+        Length of the sides of grid blocks in pixels. One is the lower limit.
 
     Attributes
     ----------
     width : int
-        Number of squares wide to make the grid.
+        Number of blocks along the width of the grid.
     height : int
-        Number of squares high to make the grid.
+        Number of blocks along the height of the grid.
     shape : tuple of int
         A tuple of (width, height).
-
+    block_size : int
+        Length of the sides of grid blocks in pixels. The block size can be
+        changed by modifying this attribute. Note that one is the lower limit.
 
     """
 
-    def __init__(self, width, height, fill=(0, 0, 0)):
+    def __init__(self, width, height, fill=(0, 0, 0), block_size=20):
         self._width = width
         self._height = height
+        self._block_size = max(_SMALLEST_BLOCK, block_size)
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
-        grid = [[Block(*fill, row=row, col=col) for col in xrange(self.width)]
+        grid = [[Block(*fill, row=row, col=col, size=self._block_size)
+                for col in xrange(self.width)]
                 for row in xrange(self.height)]
 
         self._grid = grid
@@ -213,6 +231,17 @@ class BlockGrid(object):
     @property
     def shape(self):
         return (self._width, self._height)
+
+    @property
+    def block_size(self):
+        return self._block_size
+
+    @block_size.setter
+    def block_size(self, size):
+        size = max(_SMALLEST_BLOCK, size)
+
+        for block in self:
+            block._size = size
 
     @classmethod
     def _view_from_grid(cls, grid):
