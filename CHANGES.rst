@@ -1,3 +1,8 @@
+v 1.1.1
+=======
+
+* convert assigned floating point numbers to integers for HTML compatibility
+
 v 1.1
 =====
 
