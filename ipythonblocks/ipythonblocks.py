@@ -296,7 +296,7 @@ class BlockGrid(object):
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
-            return self._grid[index]
+            return BlockGrid._view_from_grid([self._grid[index]])
 
         elif ind_cat == _SINGLE_ITEM:
             return self._grid[index[0]][index[1]]
