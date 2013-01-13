@@ -274,9 +274,13 @@ class BlockGrid(object):
             return _ROW_SLICE
 
         elif isinstance(index, tuple):
-            if len(index) not in (1, 2):
+            if len(index) > 2:
                 s = 'Invalid index, too many dimensions.'
                 raise IndexError(s)
+
+            elif len(index) == 1:
+                s = 'Single indices must be integers, not tuple.'
+                raise TypeError(s)
 
             if isinstance(index[0], slice):
                 if isinstance(index[1], (int, slice)):
