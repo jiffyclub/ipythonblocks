@@ -55,8 +55,6 @@ class Block(object):
     ----------
     red, green, blue : int
         Integers on the range [0 - 255].
-    row, col : int, optional
-        The zero-based grid position of this `Block`.
     size : int, optional
         Length of the sides of this block in pixels. One is the lower limit.
 
@@ -73,13 +71,14 @@ class Block(object):
 
     """
 
-    def __init__(self, red, green, blue, row=None, col=None, size=20):
+    def __init__(self, red, green, blue, size=20):
         self.red = red
         self.green = green
         self.blue = blue
-        self._row = row
-        self._col = col
         self.size = size
+
+        self._row = None
+        self._col = None
 
     @staticmethod
     def _check_value(value):
@@ -218,7 +217,7 @@ class BlockGrid(object):
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
-        grid = [[Block(*fill, row=row, col=col, size=self._block_size)
+        grid = [[Block(*fill, size=self._block_size)
                 for col in xrange(self.width)]
                 for row in xrange(self.height)]
 
@@ -299,7 +298,10 @@ class BlockGrid(object):
             return BlockGrid._view_from_grid([self._grid[index]])
 
         elif ind_cat == _SINGLE_ITEM:
-            return self._grid[index[0]][index[1]]
+            block = self._grid[index[0]][index[1]]
+            block._row = index[0]
+            block._col = index[1]
+            return block
 
         elif ind_cat == _ROW_SLICE:
             return BlockGrid._view_from_grid(self._grid[index])
@@ -346,7 +348,9 @@ class BlockGrid(object):
         return grid
 
     def __iter__(self):
-        return itertools.chain(*self._grid)
+        for r in xrange(self.height):
+            for c in xrange(self.width):
+                yield self[r, c]
 
     def _repr_html_(self):
         html = reduce(iadd,
