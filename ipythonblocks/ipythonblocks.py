@@ -23,7 +23,7 @@ if sys.version_info[0] >= 3:
     from functools import reduce
 
 __all__ = ('Block', 'BlockGrid', 'InvalidColorSpec', '__version__')
-__version__ = '1.2dev'
+__version__ = '1.3dev'
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
 _TR = '<tr>{0}</tr>'
