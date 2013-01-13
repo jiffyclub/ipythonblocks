@@ -120,6 +120,10 @@ class Block(object):
         self._blue = value
 
     @property
+    def colors(self):
+        return (self._red, self._green, self._blue)
+
+    @property
     def row(self):
         return self._row
 
