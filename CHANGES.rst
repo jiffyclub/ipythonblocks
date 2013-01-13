@@ -1,8 +1,19 @@
+v 1.2
+=====
+
+* ``Block.row`` and ``Block.col`` are now set by their containing
+  ``BlockGrid`` at the time the ``Block`` is returned to the user.
+  This means that while iterating over a subgrid the first ``Block``
+  will have coordinates (0, 0).
+* Getting a single row from a ``BlockGrid`` will return a new ``BlockGrid``
+* Raise a TypeError when indexing a ``BlockGrid`` with a length one tuple
+* Added a ``Block.colors`` property
+
 v 1.1.1
 =======
 
-* convert assigned floating point numbers to integers for HTML compatibility
-* added the ability to change the size of individual blocks
+* Convert assigned floating point numbers to integers for HTML compatibility
+* Added the ability to change the size of individual blocks
 
 v 1.1
 =====
