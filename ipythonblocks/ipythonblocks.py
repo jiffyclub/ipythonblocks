@@ -302,7 +302,20 @@ class BlockGrid(object):
 
         raise IndexError('Invalid index.')
 
+    def _transform_index(self, index):
+        """
+        This method is called at the beginning of __getitem__ and __setitem__
+        and  can be replaced in subclasses to implement coordinate systems
+        other than the default Python style coordinates.
+
+        Regardless of the transformation applied this should probably return
+        something with the same type and shape as the input index.
+
+        """
+        return index
+
     def __getitem__(self, index):
+        index = self._transform_index(index)
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
@@ -326,6 +339,7 @@ class BlockGrid(object):
             s = 'Assigned value must have three integers. got {0}.'
             raise ValueError(s.format(value))
 
+        index = self._transform_index(index)
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
