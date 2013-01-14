@@ -1,3 +1,9 @@
+v 1.3
+=====
+
+* Added ``BlockGrid.animate`` attribute and ``BlockGrid.flash`` method
+  to facilitate animation of grid changes in the Notebook.
+
 v 1.2
 =====
 

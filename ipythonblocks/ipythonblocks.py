@@ -12,10 +12,11 @@ import copy
 import itertools
 import numbers
 import os
+import time
 
 from operator import iadd
 
-from IPython.display import HTML, display
+from IPython.display import HTML, display, clear_output
 
 import sys
 if sys.version_info[0] >= 3:
@@ -37,6 +38,8 @@ _ROW_SLICE = 'row slice'
 _DOUBLE_SLICE = 'double slice'
 
 _SMALLEST_BLOCK = 1
+
+_SLEEP_TIME = 0.2
 
 
 class InvalidColorSpec(Exception):
@@ -360,6 +363,20 @@ class BlockGrid(object):
             for c in xrange(self.width):
                 yield self[r, c]
 
+    @property
+    def animate(self):
+        """
+        Iterate over this property to have your changes to the grid
+        animated in the IPython Notebook.
+
+        """
+        for block in self:
+            self.show()
+            time.sleep(_SLEEP_TIME)
+            yield block
+            clear_output()
+        self.show()
+
     def _repr_html_(self):
         html = reduce(iadd,
                       (_TR.format(reduce(iadd, (block.td for block in row)))
@@ -386,3 +403,12 @@ class BlockGrid(object):
 
         """
         display(HTML(self._repr_html_()))
+
+    def flash(self):
+        """
+        Display the grid for a short time. Useful for making an animation.
+
+        """
+        self.show()
+        time.sleep(_SLEEP_TIME)
+        clear_output()
