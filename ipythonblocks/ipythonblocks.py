@@ -188,9 +188,6 @@ class BlockGrid(object):
     """
     A grid of blocks whose colors can be individually controlled.
 
-    Individual blocks have a width and height of 10 screen pixels.
-    To get the second Block in the third row use block = grid[1, 2].
-
     Parameters
     ----------
     width : int
