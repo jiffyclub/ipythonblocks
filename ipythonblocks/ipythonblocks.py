@@ -423,3 +423,72 @@ class BlockGrid(object):
         self.show()
         time.sleep(_SLEEP_TIME)
         clear_output()
+
+
+class ImageGrid(BlockGrid):
+    """
+    A grid of blocks whose colors can be individually controlled.
+
+    Parameters
+    ----------
+    width : int
+        Number of blocks wide to make the grid.
+    height : int
+        Number of blocks high to make the grid.
+    fill : tuple of int, optional
+        An optional initial color for the grid, defaults to black.
+        Specified as a tuple of (red, green, blue). E.g.: (10, 234, 198)
+    block_size : int, optional
+        Length of the sides of grid blocks in pixels. One is the lower limit.
+    origin : {'lower-left', 'upper-left'}
+        Set the location of the grid origin.
+
+    Attributes
+    ----------
+    width : int
+        Number of blocks along the width of the grid.
+    height : int
+        Number of blocks along the height of the grid.
+    shape : tuple of int
+        A tuple of (width, height).
+    block_size : int
+        Length of the sides of grid blocks in pixels.
+    origin : str
+        The location of the grid origin.
+
+    """
+
+    def __init__(self, width, height, fill=(0, 0, 0),
+                 block_size=20, origin='lower-left'):
+        super(ImageGrid, self).__init__(width, height, fill, block_size)
+
+        if origin not in ('lower-left', 'upper-left'):
+            s = "origin keyword must be one of {'lower-left', 'upper-left'}."
+            raise ValueError(s)
+
+        self._origin = origin
+
+    @property
+    def block_size(self):
+        return self._block_size
+
+    @property
+    def origin(self):
+        return self._origin
+
+    def _transform_index(self, index):
+        """
+        Transform an index from Python style coordinates to image style
+        coordinates in which the first item refers to column and the second
+        item refers to row. Also takes into account the location of the origin.
+
+        """
+        return index
+
+    def __getitem__(self, index):
+        # ImageGrid will only support single item indexing and 2D slices
+        if not isinstance(index, tuple):
+            s = 'ImageGrid only supports 2D indexing.'
+            raise IndexError(s)
+
+        return super(ImageGrid, self).__getitem__(index)
