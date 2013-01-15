@@ -267,14 +267,3 @@ def test_setitem(basic_grid):
     bg[::3, ::3] = colors
     for block in bg[::3, ::3]:
         assert block.colors == colors
-
-
-def test_transform_index(basic_grid):
-    """
-    BlockGrid._transform_index should do nothing.
-
-    """
-    bg = basic_grid
-
-    index = (2, 3)
-    assert bg._transform_index(index) == index

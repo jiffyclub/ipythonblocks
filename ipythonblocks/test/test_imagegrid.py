@@ -92,3 +92,29 @@ def test_getitem_lower_left_slice(lower_left):
     assert ng.width == 1
     assert ng.height == 2
     assert ng._grid == [[ll._grid[-2][0]], [ll._grid[-1][0]]]
+
+
+def test_setitem_lower_left_single(lower_left):
+    ll = lower_left
+
+    ll[0, 1].set_colors(201, 202, 203)
+
+    assert ll._grid[-2][0].red == 201
+    assert ll._grid[-2][0].green == 202
+    assert ll._grid[-2][0].blue == 203
+
+
+def test_setitem_lower_left_slice(lower_left):
+    ll = lower_left
+
+    ll[:, ::2] = (201, 202, 203)
+
+    for pix in ll._grid[0]:
+        assert pix.red == 201
+        assert pix.green == 202
+        assert pix.blue == 203
+
+    for pix in ll._grid[2]:
+        assert pix.red == 201
+        assert pix.green == 202
+        assert pix.blue == 203

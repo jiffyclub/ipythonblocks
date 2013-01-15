@@ -254,7 +254,7 @@ class BlockGrid(object):
     @classmethod
     def _view_from_grid(cls, grid):
         """
-        Make a new BlockGrid from a list of lists of Block objects.
+        Make a new grid from a list of lists of Block objects.
 
         """
         new_width = len(grid[0])
@@ -300,24 +300,11 @@ class BlockGrid(object):
 
         raise IndexError('Invalid index.')
 
-    def _transform_index(self, index):
-        """
-        This method is called at the beginning of __getitem__ and __setitem__
-        and  can be replaced in subclasses to implement coordinate systems
-        other than the default Python style coordinates.
-
-        Regardless of the transformation applied this should probably return
-        something with the same type and shape as the input index.
-
-        """
-        return index
-
     def __getitem__(self, index):
-        index = self._transform_index(index)
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
-            return BlockGrid._view_from_grid([self._grid[index]])
+            return self._view_from_grid([self._grid[index]])
 
         elif ind_cat == _SINGLE_ITEM:
             block = self._grid[index[0]][index[1]]
@@ -326,18 +313,17 @@ class BlockGrid(object):
             return block
 
         elif ind_cat == _ROW_SLICE:
-            return BlockGrid._view_from_grid(self._grid[index])
+            return self._view_from_grid(self._grid[index])
 
         elif ind_cat == _DOUBLE_SLICE:
             new_grid = self._get_double_slice(index)
-            return BlockGrid._view_from_grid(new_grid)
+            return self._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
         if len(value) != 3:
             s = 'Assigned value must have three integers. got {0}.'
             raise ValueError(s.format(value))
 
-        index = self._transform_index(index)
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
@@ -504,9 +490,10 @@ class ImageGrid(BlockGrid):
 
     def _transform_index(self, index):
         """
-        Transform an index from Python style coordinates to image style
-        coordinates in which the first item refers to column and the second
-        item refers to row. Also takes into account the location of the origin.
+        Transform a single-item index from Python style coordinates to
+        image style coordinates in which the first item refers to column and
+        the second item refers to row. Also takes into account the
+        location of the origin.
 
         """
         # in ImageGrid index is guaranteed to be a tuple.
@@ -518,47 +505,61 @@ class ImageGrid(BlockGrid):
         # now take into account that the ImageGrid origin may be lower-left,
         # while the ._grid origin is upper-left.
         if self._origin == 'lower-left':
-            if isinstance(new_ind[0], int):
-                new_ind[0] = self._height - new_ind[0] - 1
-
-            elif isinstance(new_ind[0], slice):
-                s = new_ind[0]
-
-                if s.stop is not None:
-                    new_start = self._height - s.stop
-                else:
-                    new_start = None
-
-                if s.start is not None:
-                    new_stop = self._height - s.start
-                else:
-                    new_stop = None
-
-                new_ind[0] = slice(new_start, new_stop, s.step)
+            new_ind[0] = self._height - new_ind[0] - 1
 
         return tuple(new_ind)
 
     def __getitem__(self, index):
+        ind_cat = self._categorize_index(index)
+
         # ImageGrid will only support single item indexing and 2D slices
-        if not isinstance(index, tuple):
+        if ind_cat not in (_DOUBLE_SLICE, _SINGLE_ITEM):
             s = 'ImageGrid only supports 2D indexing.'
             raise IndexError(s)
 
-        pixel = super(ImageGrid, self).__getitem__(index)
-
-        if isinstance(pixel, Pixel):
+        if ind_cat == _SINGLE_ITEM:
+            real_index = self._transform_index(index)
+            pixel = self._grid[real_index[0]][real_index[1]]
             pixel._row = index[1]
             pixel._col = index[0]
+            return pixel
 
-        return pixel
+        elif ind_cat == _DOUBLE_SLICE:
+            new_grid = self._get_double_slice(index)
+            return self._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
-        # ImageGrid will only support single item indexing and 2D slices
-        if not isinstance(index, tuple):
-            s = 'ImageGrid only supports 2D indexing.'
-            raise IndexError(s)
+        if len(value) != 3:
+            s = 'Assigned value must have three integers. got {0}.'
+            raise ValueError(s.format(value))
 
-        super(ImageGrid, self).__setitem__(index, value)
+        pixels = self[index]
+
+        if isinstance(pixels, Pixel):
+            pixels.set_colors(*value)
+
+        else:
+            map(lambda p: p.set_colors(*value), itertools.chain(*pixels._grid))
+
+    def _get_double_slice(self, index):
+        rslice = index[1]
+        cslice = index[0]
+
+        if isinstance(rslice, int):
+            rslice = slice(rslice, rslice + 1)
+
+        if isinstance(cslice, int):
+            cslice = slice(cslice, cslice + 1)
+
+        rows = range(self._height)[rslice]
+        if self._origin == 'lower-left':
+            rows = rows[::-1]
+
+        cols = range(self._width)[cslice]
+
+        new_grid = [[self[c, r] for c in cols] for r in rows]
+
+        return new_grid
 
     def __iter__(self):
         for col in xrange(self.width):
