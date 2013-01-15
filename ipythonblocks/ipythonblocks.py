@@ -23,7 +23,8 @@ if sys.version_info[0] >= 3:
     xrange = range
     from functools import reduce
 
-__all__ = ('Block', 'BlockGrid', 'InvalidColorSpec', '__version__')
+__all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
+           'InvalidColorSpec', '__version__')
 __version__ = '1.3dev'
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
@@ -425,6 +426,24 @@ class BlockGrid(object):
         clear_output()
 
 
+class Pixel(Block):
+    @property
+    def x(self):
+        """
+        Horizontal coordinate of Pixel.
+
+        """
+        return self._col
+
+    @property
+    def y(self):
+        """
+        Vertical coordinate of Pixel.
+
+        """
+        return self._row
+
+
 class ImageGrid(BlockGrid):
     """
     A grid of blocks whose colors can be individually controlled.
@@ -468,6 +487,13 @@ class ImageGrid(BlockGrid):
 
         self._origin = origin
 
+    def _initialize_grid(self, fill):
+        grid = [[Pixel(*fill, size=self._block_size)
+                for col in xrange(self.width)]
+                for row in xrange(self.height)]
+
+        self._grid = grid
+
     @property
     def block_size(self):
         return self._block_size
@@ -483,7 +509,34 @@ class ImageGrid(BlockGrid):
         item refers to row. Also takes into account the location of the origin.
 
         """
-        return index
+        # in ImageGrid index is guaranteed to be a tuple.
+
+        # first thing, switch the coordinates since ImageGrid is column
+        # major and ._grid is row major.
+        new_ind = [index[1], index[0]]
+
+        # now take into account that the ImageGrid origin may be lower-left,
+        # while the ._grid origin is upper-left.
+        if self._origin == 'lower-left':
+            if isinstance(new_ind[0], int):
+                new_ind[0] = self._height - new_ind[0] - 1
+
+            elif isinstance(new_ind[0], slice):
+                s = new_ind[0]
+
+                if s.stop is not None:
+                    new_start = self._height - s.stop
+                else:
+                    new_start = None
+
+                if s.start is not None:
+                    new_stop = self._height - s.start
+                else:
+                    new_stop = None
+
+                new_ind[0] = slice(new_start, new_stop, s.step)
+
+        return tuple(new_ind)
 
     def __getitem__(self, index):
         # ImageGrid will only support single item indexing and 2D slices
@@ -491,4 +544,23 @@ class ImageGrid(BlockGrid):
             s = 'ImageGrid only supports 2D indexing.'
             raise IndexError(s)
 
-        return super(ImageGrid, self).__getitem__(index)
+        pixel = super(ImageGrid, self).__getitem__(index)
+
+        if isinstance(pixel, Pixel):
+            pixel._row = index[1]
+            pixel._col = index[0]
+
+        return pixel
+
+    def __setitem__(self, index, value):
+        # ImageGrid will only support single item indexing and 2D slices
+        if not isinstance(index, tuple):
+            s = 'ImageGrid only supports 2D indexing.'
+            raise IndexError(s)
+
+        super(ImageGrid, self).__setitem__(index, value)
+
+    def __iter__(self):
+        for col in xrange(self.width):
+            for row in xrange(self.height):
+                yield self[col, row]
