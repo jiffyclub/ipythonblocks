@@ -236,34 +236,34 @@ def test_setitem(basic_grid):
 
     # single block
     bg[0, 0] = colors
-    assert bg[0, 0].colors == colors
+    assert bg[0, 0].rgb == colors
 
     # single row
     bg[2] = colors
     for block in bg[2]:
-        assert block.colors == colors
+        assert block.rgb == colors
 
     # two rows
     bg[3:5] = colors
     for block in bg[3:5]:
-        assert block.colors == colors
+        assert block.rgb == colors
 
     # one row via a slice
     bg[1, :] = colors
     for block in bg[1, :]:
-        assert block.colors == colors
+        assert block.rgb == colors
 
     # one column
     bg[:, 5] = colors
     for block in bg[:, 5]:
-        assert block.colors == colors
+        assert block.rgb == colors
 
     # 2 x 2 subgrid
     bg[:2, :2] = colors
     for block in bg[:2, :2]:
-        assert block.colors == colors
+        assert block.rgb == colors
 
     # strided slicing
     bg[::3, ::3] = colors
     for block in bg[::3, ::3]:
-        assert block.colors == colors
+        assert block.rgb == colors

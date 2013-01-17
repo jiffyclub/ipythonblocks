@@ -67,6 +67,9 @@ class Block(object):
     red, green, blue : int
         The color values for this `Block`. The color of the `Block` can be
         updated by assigning new values to these attributes.
+    rgb : tuple of int
+        Tuple of (red, green, blue) values. Can be used to set all the colors
+        at once.
     row, col : int
         The zero-based grid position of this `Block`.
     size : int
@@ -124,8 +127,18 @@ class Block(object):
         self._blue = value
 
     @property
-    def colors(self):
+    def rgb(self):
         return (self._red, self._green, self._blue)
+
+    @rgb.setter
+    def rgb(self, colors):
+        if len(colors) != 3:
+            s = 'Setting colors requires three values: (red, green, blue).'
+            raise ValueError(s)
+
+        self.red = colors[0]
+        self.green = colors[1]
+        self.blue = colors[2]
 
     @property
     def row(self):

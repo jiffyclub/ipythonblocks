@@ -17,7 +17,7 @@ def test_basic_api(basic_block):
     """
     bb = basic_block
 
-    assert bb.colors == (5, 6, 7)
+    assert bb.rgb == (5, 6, 7)
 
     assert bb.red == 5
     bb.red = 1
@@ -31,7 +31,7 @@ def test_basic_api(basic_block):
     bb.blue = 3
     assert bb.blue == 3
 
-    assert bb.colors == (1, 2, 3)
+    assert bb.rgb == (1, 2, 3)
 
     assert bb.size == 20
     bb.size = 10
@@ -96,6 +96,28 @@ def test_set_colors(basic_block):
     assert bb.red == 200
     assert bb.green == 201
     assert bb.blue == 202
+
+
+def test_rgb_attr(basic_block):
+    """
+    Test out the .rgb attribute.
+
+    """
+    bb = basic_block
+
+    assert bb.rgb == (5, 6, 7)
+
+    bb.rgb = (1, 2, 3)
+    assert bb.rgb == (1, 2, 3)
+    assert bb._red == 1
+    assert bb._green == 2
+    assert bb._blue == 3
+
+    with pytest.raises(ValueError):
+        bb.rgb = (1, 2)
+
+    with pytest.raises(ValueError):
+        bb.rgb = (4, 5, 6, 7, 8)
 
 
 def test_td(basic_block):
