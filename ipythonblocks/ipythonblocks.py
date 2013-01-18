@@ -25,7 +25,7 @@ if sys.version_info[0] >= 3:
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', '__version__')
-__version__ = '1.3'
+__version__ = '1.4dev'
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
 _TR = '<tr>{0}</tr>'
