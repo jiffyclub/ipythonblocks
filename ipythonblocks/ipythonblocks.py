@@ -137,9 +137,7 @@ class Block(object):
             s = 'Setting colors requires three values: (red, green, blue).'
             raise ValueError(s)
 
-        self.red = colors[0]
-        self.green = colors[1]
-        self.blue = colors[2]
+        self.red, self.green, self.blue = colors
 
     @property
     def row(self):
@@ -324,8 +322,7 @@ class BlockGrid(object):
 
         elif ind_cat == _SINGLE_ITEM:
             block = self._grid[index[0]][index[1]]
-            block._row = index[0]
-            block._col = index[1]
+            block._row, block._col = index # only two elements, right?
             return block
 
         elif ind_cat == _ROW_SLICE:
@@ -358,8 +355,7 @@ class BlockGrid(object):
             map(lambda b: b.set_colors(*value), itertools.chain(*sub_grid))
 
     def _get_double_slice(self, index):
-        sl_height = index[0]
-        sl_width = index[1]
+        sl_height, sl_width = index # again, must be only two elements
 
         if isinstance(sl_width, int):
             sl_width = slice(sl_width, sl_width + 1)
@@ -564,8 +560,7 @@ class ImageGrid(BlockGrid):
         if ind_cat == _SINGLE_ITEM:
             real_index = self._transform_index(index)
             pixel = self._grid[real_index[0]][real_index[1]]
-            pixel._row = index[1]
-            pixel._col = index[0]
+            pixel._row, pixel._col = index # Same again
             return pixel
 
         elif ind_cat == _DOUBLE_SLICE:
@@ -586,8 +581,7 @@ class ImageGrid(BlockGrid):
             map(lambda p: p.set_colors(*value), itertools.chain(*pixels._grid))
 
     def _get_double_slice(self, index):
-        rslice = index[1]
-        cslice = index[0]
+        rslice, cslice = index # and again
 
         if isinstance(rslice, int):
             rslice = slice(rslice, rslice + 1)
