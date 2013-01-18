@@ -127,7 +127,11 @@ def test_td(basic_block):
     """
     bb = basic_block
 
-    title = ipythonblocks._TITLE.format(None, None, bb.red, bb.green, bb.blue)
+    bb._row = 1
+    bb._col = 2
+
+    title = ipythonblocks._TITLE.format(bb._row, bb._col,
+                                        bb.red, bb.green, bb.blue)
     rgb = ipythonblocks._RGB.format(bb.red, bb.green, bb.blue)
     td = ipythonblocks._TD.format(title, bb.size, rgb)
 
