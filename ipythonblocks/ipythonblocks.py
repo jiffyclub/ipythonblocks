@@ -29,9 +29,10 @@ __version__ = '1.3dev'
 
 _TABLE = '<table><tbody>{0}</tbody></table>'
 _TR = '<tr>{0}</tr>'
-_TD = ('<td style="width: {0}px; height: {0}px; padding: 0px;'
-       'border: 1px solid white; background-color: {1};"></td>')
+_TD = ('<td title="{0}" style="width: {1}px; height: {1}px; padding: 0px;'
+       'border: 1px solid white; background-color: {2};"></td>')
 _RGB = 'rgb({0}, {1}, {2})'
+_TITLE = 'Index: [{0}, {1}]&#10;Color: ({2}, {3}, {4})'
 
 _SINGLE_ITEM = 'single item'
 _SINGLE_ROW = 'single row'
@@ -171,29 +172,31 @@ class Block(object):
         self.blue = blue
 
     @property
-    def td(self):
+    def _td(self):
         """
         The HTML for a table cell with the background color of this Block.
 
         """
+        title = _TITLE.format(self._row, self._col,
+                              self._red, self._green, self._blue)
         rgb = _RGB.format(self._red, self._green, self._blue)
-        return _TD.format(self._size, rgb)
+        return _TD.format(title, self._size, rgb)
 
     def _repr_html_(self):
-        return _TABLE.format(_TR.format(self.td))
+        return _TABLE.format(_TR.format(self._td))
 
     def show(self):
         display(HTML(self._repr_html_()))
 
     def __str__(self):
-        s = ['Block',
+        s = ['{0}'.format(self.__class__.__name__),
              'Color: ({0}, {1}, {2})'.format(self._red,
                                              self._green,
                                              self._blue)]
 
         # add position information if we have it
         if self._row is not None:
-            s[0] += ' ({0}, {1})'.format(self._row, self._col)
+            s[0] += ' [{0}, {1}]'.format(self._row, self._col)
 
         return os.linesep.join(s)
 
@@ -389,14 +392,19 @@ class BlockGrid(object):
         self.show()
 
     def _repr_html_(self):
+        rows = range(self._height)
+        cols = range(self._width)
+
         html = reduce(iadd,
-                      (_TR.format(reduce(iadd, (block.td for block in row)))
-                       for row in self._grid))
+                      (_TR.format(reduce(iadd,
+                                         (self[r, c]._td
+                                          for c in cols)))
+                       for r in rows))
 
         return _TABLE.format(html)
 
     def __str__(self):
-        s = ['BlockGrid',
+        s = ['{0}'.format(self.__class__.__name__),
              'Shape: {0}'.format(self.shape)]
 
         return os.linesep.join(s)
@@ -441,6 +449,29 @@ class Pixel(Block):
 
         """
         return self._row
+
+    @property
+    def _td(self):
+        """
+        The HTML for a table cell with the background color of this Pixel.
+
+        """
+        title = _TITLE.format(self._col, self._row,
+                              self._red, self._green, self._blue)
+        rgb = _RGB.format(self._red, self._green, self._blue)
+        return _TD.format(title, self._size, rgb)
+
+    def __str__(self):
+        s = ['{0}'.format(self.__class__.__name__),
+             'Color: ({0}, {1}, {2})'.format(self._red,
+                                             self._green,
+                                             self._blue)]
+
+        # add position information if we have it
+        if self._row is not None:
+            s[0] += ' [{0}, {1}]'.format(self._col, self._row)
+
+        return os.linesep.join(s)
 
 
 class ImageGrid(BlockGrid):
@@ -578,3 +609,18 @@ class ImageGrid(BlockGrid):
         for col in xrange(self.width):
             for row in xrange(self.height):
                 yield self[col, row]
+
+    def _repr_html_(self):
+        rows = range(self._height)
+        cols = range(self._width)
+
+        if self._origin == 'lower-left':
+            rows = rows[::-1]
+
+        html = reduce(iadd,
+                      (_TR.format(reduce(iadd,
+                                         (self[c, r]._td
+                                          for c in cols)))
+                       for r in rows))
+
+        return _TABLE.format(html)

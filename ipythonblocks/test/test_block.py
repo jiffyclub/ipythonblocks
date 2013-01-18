@@ -122,15 +122,16 @@ def test_rgb_attr(basic_block):
 
 def test_td(basic_block):
     """
-    Test the Block.td proerty that returns an HTML table cell.
+    Test the Block._td proerty that returns an HTML table cell.
 
     """
     bb = basic_block
 
+    title = ipythonblocks._TITLE.format(None, None, bb.red, bb.green, bb.blue)
     rgb = ipythonblocks._RGB.format(bb.red, bb.green, bb.blue)
-    td = ipythonblocks._TD.format(bb.size, rgb)
+    td = ipythonblocks._TD.format(title, bb.size, rgb)
 
-    assert bb.td == td
+    assert bb._td == td
 
 
 def test_repr_html(basic_block):
@@ -140,7 +141,7 @@ def test_repr_html(basic_block):
     """
     bb = basic_block
 
-    table = ipythonblocks._TABLE.format(ipythonblocks._TR.format(bb.td))
+    table = ipythonblocks._TABLE.format(ipythonblocks._TR.format(bb._td))
 
     assert bb._repr_html_() == table
 
@@ -166,6 +167,6 @@ def test_str2(basic_block):
     bb._row = 8
     bb._col = 9
 
-    s = os.linesep.join(['Block (8, 9)', 'Color: (5, 6, 7)'])
+    s = os.linesep.join(['Block [8, 9]', 'Color: (5, 6, 7)'])
 
     assert bb.__str__() == s
