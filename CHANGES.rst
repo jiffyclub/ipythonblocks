@@ -5,6 +5,8 @@ v 1.3
   to facilitate animation of grid changes in the Notebook.
 * Added `Pixel` and `ImageGrid` subclasses that behave more like image
   manipulation libraries.
+* Added cell titles so hover the mouse over a block displays the block
+  index and color.
 
 v 1.2
 =====
