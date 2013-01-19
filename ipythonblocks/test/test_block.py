@@ -138,14 +138,19 @@ def test_td(basic_block):
     assert bb._td == td
 
 
-def test_repr_html(basic_block):
+def test_repr_html(basic_block, monkeypatch):
     """
     Test the Block._repr_html_ method that returns a single cell HTML table.
 
     """
+    from .test_blockgrid import uuid, fake_uuid
+
     bb = basic_block
 
-    table = ipythonblocks._TABLE.format(ipythonblocks._TR.format(bb._td))
+    monkeypatch.setattr(uuid, 'uuid4', fake_uuid)
+
+    table = ipythonblocks._TABLE.format(fake_uuid(), 0,
+                                        ipythonblocks._TR.format(bb._td))
 
     assert bb._repr_html_() == table
 

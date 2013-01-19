@@ -5,12 +5,12 @@ from .. import ipythonblocks
 
 @pytest.fixture
 def upper_left():
-    return ipythonblocks.ImageGrid(2, 3, (7, 8, 9), 20, 'upper-left')
+    return ipythonblocks.ImageGrid(2, 3, (7, 8, 9), 20, True, 'upper-left')
 
 
 @pytest.fixture
 def lower_left():
-    return ipythonblocks.ImageGrid(2, 3, (7, 8, 9), 20, 'lower-left')
+    return ipythonblocks.ImageGrid(2, 3, (7, 8, 9), 20, True, 'lower-left')
 
 
 def test_init_bad_origin():

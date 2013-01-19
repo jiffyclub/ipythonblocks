@@ -1,12 +1,17 @@
 import os
+import uuid
 import pytest
 
 from .. import ipythonblocks
 
 
+def fake_uuid():
+    return 'abc'
+
+
 @pytest.fixture
 def basic_grid():
-    return ipythonblocks.BlockGrid(5, 6, (1, 2, 3), 20)
+    return ipythonblocks.BlockGrid(5, 6, (1, 2, 3), 20, True)
 
 
 def test_basic_api(basic_grid):
@@ -27,6 +32,7 @@ def test_basic_api(basic_grid):
 
     assert bg.shape == (5, 6)
     assert bg.block_size == 20
+    assert bg.border_on is True
 
 
 def test_grid_init(basic_grid):
@@ -59,6 +65,25 @@ def test_change_block_size(basic_grid):
 
     for block in bg:
         assert block.size == 10
+
+
+def test_change_border_on(basic_grid):
+    """
+    Test changing the BlockGrid.border_on attribute.
+
+    """
+    bg = basic_grid
+
+    assert bg.border_on is True
+
+    bg.border_on = False
+    assert bg.border_on is False
+
+    with pytest.raises(ValueError):
+        bg.border_on = 5
+
+    with pytest.raises(ValueError):
+        bg.border_on = 'asdf'
 
 
 def test_view(basic_grid):
@@ -124,12 +149,15 @@ def test_str(basic_grid):
     assert bg.__str__() == s
 
 
-def test_repr_html():
+def test_repr_html(monkeypatch):
     """
     HTML repr should be the same for a 1, 1 BlockGrid as for a single Block.
+    (As long as the BlockGrid border is off.)
 
     """
-    bg = ipythonblocks.BlockGrid(1, 1)
+    bg = ipythonblocks.BlockGrid(1, 1, border_on=False)
+
+    monkeypatch.setattr(uuid, 'uuid4', fake_uuid)
 
     assert bg._repr_html_() == bg[0, 0]._repr_html_()
 

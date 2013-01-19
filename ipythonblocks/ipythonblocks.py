@@ -13,6 +13,7 @@ import itertools
 import numbers
 import os
 import time
+import uuid
 
 from operator import iadd
 
@@ -27,10 +28,16 @@ __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', '__version__')
 __version__ = '1.4dev'
 
-_TABLE = '<table><tbody>{0}</tbody></table>'
+_TABLE = ('<style type="text/css">'
+          'table.blockgrid {{border: none;}}'
+          ' .blockgrid tr {{border: none;}}'
+          ' .blockgrid td {{padding: 0px;}}'
+          ' #blocks{0} td {{border: {1}px solid white;}}'
+          '</style>'
+          '<table id="blocks{0}" class="blockgrid"><tbody>{2}</tbody></table>')
 _TR = '<tr>{0}</tr>'
-_TD = ('<td title="{0}" style="width: {1}px; height: {1}px; padding: 0px;'
-       'border: 1px solid white; background-color: {2};"></td>')
+_TD = ('<td title="{0}" style="width: {1}px; height: {1}px;'
+       'background-color: {2};"></td>')
 _RGB = 'rgb({0}, {1}, {2})'
 _TITLE = 'Index: [{0}, {1}]&#10;Color: ({2}, {3}, {4})'
 
@@ -183,7 +190,7 @@ class Block(object):
         return _TD.format(title, self._size, rgb)
 
     def _repr_html_(self):
-        return _TABLE.format(_TR.format(self._td))
+        return _TABLE.format(uuid.uuid4(), 0, _TR.format(self._td))
 
     def show(self):
         display(HTML(self._repr_html_()))
@@ -216,6 +223,8 @@ class BlockGrid(object):
         Specified as a tuple of (red, green, blue). E.g.: (10, 234, 198)
     block_size : int, optional
         Length of the sides of grid blocks in pixels. One is the lower limit.
+    border_on : bool, optional
+        Whether or not to display a border between blocks.
 
     Attributes
     ----------
@@ -228,13 +237,18 @@ class BlockGrid(object):
     block_size : int
         Length of the sides of grid blocks in pixels. The block size can be
         changed by modifying this attribute. Note that one is the lower limit.
+    border_on : bool
+        Whether a border is displayed between blocks when it's displayed.
+        This attribute can used to toggle the whether the border is displayed.
 
     """
 
-    def __init__(self, width, height, fill=(0, 0, 0), block_size=20):
+    def __init__(self, width, height, fill=(0, 0, 0),
+                 block_size=20, border_on=True):
         self._width = width
         self._height = height
         self._block_size = block_size
+        self.border_on = border_on
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
@@ -266,6 +280,18 @@ class BlockGrid(object):
 
         for block in self:
             block.size = size
+
+    @property
+    def border_on(self):
+        return self._border_on
+
+    @border_on.setter
+    def border_on(self, value):
+        if value not in (0, 1):
+            s = 'border_on may only be True or False.'
+            raise ValueError(s)
+
+        self._border_on = value
 
     @classmethod
     def _view_from_grid(cls, grid):
@@ -401,7 +427,7 @@ class BlockGrid(object):
                                           for c in cols)))
                        for r in rows))
 
-        return _TABLE.format(html)
+        return _TABLE.format(uuid.uuid4(), int(self._border_on), html)
 
     def __str__(self):
         s = ['{0}'.format(self.__class__.__name__),
@@ -489,6 +515,8 @@ class ImageGrid(BlockGrid):
         Specified as a tuple of (red, green, blue). E.g.: (10, 234, 198)
     block_size : int, optional
         Length of the sides of grid blocks in pixels. One is the lower limit.
+    border_on : bool, optional
+        Whether or not to display a border between blocks.
     origin : {'lower-left', 'upper-left'}
         Set the location of the grid origin.
 
@@ -502,14 +530,18 @@ class ImageGrid(BlockGrid):
         A tuple of (width, height).
     block_size : int
         Length of the sides of grid blocks in pixels.
+    border_on : bool
+        Whether a border is displayed between blocks when it's displayed.
+        This attribute can used to toggle the whether the border is displayed.
     origin : str
         The location of the grid origin.
 
     """
 
     def __init__(self, width, height, fill=(0, 0, 0),
-                 block_size=20, origin='lower-left'):
-        super(ImageGrid, self).__init__(width, height, fill, block_size)
+                 block_size=20, border_on=True, origin='lower-left'):
+        super(ImageGrid, self).__init__(width, height, fill,
+                                        block_size, border_on)
 
         if origin not in ('lower-left', 'upper-left'):
             s = "origin keyword must be one of {'lower-left', 'upper-left'}."
@@ -623,4 +655,4 @@ class ImageGrid(BlockGrid):
                                           for c in cols)))
                        for r in rows))
 
-        return _TABLE.format(html)
+        return _TABLE.format(uuid.uuid4(), int(self._border_on), html)
