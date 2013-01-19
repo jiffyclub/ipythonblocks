@@ -35,8 +35,8 @@ you can just grab `ipythonblocks.py`_ and copy it to wherever you
 want to use it (useful for packaging with other teaching materials).
 
 .. _IPython: http://ipython.org
-.. _Basic usage: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/ipythonblocks_demo.ipynb
-.. _Fun examples: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/ipythonblocks_fun.ipynb
-.. _Animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/ipythonblocks_animation.ipynb
-.. _ImageGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/ipythonblocks_imagegrid.ipynb
+.. _Basic usage: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_demo.ipynb
+.. _Fun examples: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_fun.ipynb
+.. _Animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_animation.ipynb
+.. _ImageGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_imagegrid.ipynb
 .. _ipythonblocks.py: https://github.com/jiffyclub/ipythonblocks/blob/master/ipythonblocks/ipythonblocks.py
