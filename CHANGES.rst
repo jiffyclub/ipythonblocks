@@ -1,3 +1,10 @@
+v 1.4
+=====
+
+* The borders around cells can be toggled on and off. Turning the borders
+  off can sometimes improve the aesthetics of grids, especially at small
+  block sizes.
+
 v 1.3
 =====
 
