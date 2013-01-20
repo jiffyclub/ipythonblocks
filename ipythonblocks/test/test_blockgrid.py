@@ -32,7 +32,7 @@ def test_basic_api(basic_grid):
 
     assert bg.shape == (5, 6)
     assert bg.block_size == 20
-    assert bg.border_on is True
+    assert bg.lines_on is True
 
 
 def test_grid_init(basic_grid):
@@ -67,23 +67,23 @@ def test_change_block_size(basic_grid):
         assert block.size == 10
 
 
-def test_change_border_on(basic_grid):
+def test_change_lines_on(basic_grid):
     """
-    Test changing the BlockGrid.border_on attribute.
+    Test changing the BlockGrid.lines_on attribute.
 
     """
     bg = basic_grid
 
-    assert bg.border_on is True
+    assert bg.lines_on is True
 
-    bg.border_on = False
-    assert bg.border_on is False
-
-    with pytest.raises(ValueError):
-        bg.border_on = 5
+    bg.lines_on = False
+    assert bg.lines_on is False
 
     with pytest.raises(ValueError):
-        bg.border_on = 'asdf'
+        bg.lines_on = 5
+
+    with pytest.raises(ValueError):
+        bg.lines_on = 'asdf'
 
 
 def test_view(basic_grid):
@@ -155,7 +155,7 @@ def test_repr_html(monkeypatch):
     (As long as the BlockGrid border is off.)
 
     """
-    bg = ipythonblocks.BlockGrid(1, 1, border_on=False)
+    bg = ipythonblocks.BlockGrid(1, 1, lines_on=False)
 
     monkeypatch.setattr(uuid, 'uuid4', fake_uuid)
 

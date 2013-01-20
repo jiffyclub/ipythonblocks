@@ -223,8 +223,8 @@ class BlockGrid(object):
         Specified as a tuple of (red, green, blue). E.g.: (10, 234, 198)
     block_size : int, optional
         Length of the sides of grid blocks in pixels. One is the lower limit.
-    border_on : bool, optional
-        Whether or not to display a border between blocks.
+    lines_on : bool, optional
+        Whether or not to display lines between blocks.
 
     Attributes
     ----------
@@ -237,18 +237,18 @@ class BlockGrid(object):
     block_size : int
         Length of the sides of grid blocks in pixels. The block size can be
         changed by modifying this attribute. Note that one is the lower limit.
-    border_on : bool
-        Whether a border is displayed between blocks when it's displayed.
-        This attribute can used to toggle the whether the border is displayed.
+    lines_on : bool
+        Whether lines are shown between blocks when the grid is displayed.
+        This attribute can used to toggle the whether the lines appear.
 
     """
 
     def __init__(self, width, height, fill=(0, 0, 0),
-                 block_size=20, border_on=True):
+                 block_size=20, lines_on=True):
         self._width = width
         self._height = height
         self._block_size = block_size
-        self.border_on = border_on
+        self.lines_on = lines_on
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
@@ -282,16 +282,16 @@ class BlockGrid(object):
             block.size = size
 
     @property
-    def border_on(self):
-        return self._border_on
+    def lines_on(self):
+        return self._lines_on
 
-    @border_on.setter
-    def border_on(self, value):
+    @lines_on.setter
+    def lines_on(self, value):
         if value not in (0, 1):
-            s = 'border_on may only be True or False.'
+            s = 'lines_on may only be True or False.'
             raise ValueError(s)
 
-        self._border_on = value
+        self._lines_on = value
 
     @classmethod
     def _view_from_grid(cls, grid):
@@ -427,7 +427,7 @@ class BlockGrid(object):
                                           for c in cols)))
                        for r in rows))
 
-        return _TABLE.format(uuid.uuid4(), int(self._border_on), html)
+        return _TABLE.format(uuid.uuid4(), int(self._lines_on), html)
 
     def __str__(self):
         s = ['{0}'.format(self.__class__.__name__),
@@ -515,8 +515,8 @@ class ImageGrid(BlockGrid):
         Specified as a tuple of (red, green, blue). E.g.: (10, 234, 198)
     block_size : int, optional
         Length of the sides of grid blocks in pixels. One is the lower limit.
-    border_on : bool, optional
-        Whether or not to display a border between blocks.
+    lines_on : bool, optional
+        Whether or not to display lines between blocks.
     origin : {'lower-left', 'upper-left'}
         Set the location of the grid origin.
 
@@ -530,18 +530,18 @@ class ImageGrid(BlockGrid):
         A tuple of (width, height).
     block_size : int
         Length of the sides of grid blocks in pixels.
-    border_on : bool
-        Whether a border is displayed between blocks when it's displayed.
-        This attribute can used to toggle the whether the border is displayed.
+    lines_on : bool
+        Whether lines are shown between blocks when the grid is displayed.
+        This attribute can used to toggle the whether the lines appear.
     origin : str
         The location of the grid origin.
 
     """
 
     def __init__(self, width, height, fill=(0, 0, 0),
-                 block_size=20, border_on=True, origin='lower-left'):
+                 block_size=20, lines_on=True, origin='lower-left'):
         super(ImageGrid, self).__init__(width, height, fill,
-                                        block_size, border_on)
+                                        block_size, lines_on)
 
         if origin not in ('lower-left', 'upper-left'):
             s = "origin keyword must be one of {'lower-left', 'upper-left'}."
@@ -655,4 +655,4 @@ class ImageGrid(BlockGrid):
                                           for c in cols)))
                        for r in rows))
 
-        return _TABLE.format(uuid.uuid4(), int(self._border_on), html)
+        return _TABLE.format(uuid.uuid4(), int(self._lines_on), html)
