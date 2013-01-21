@@ -295,3 +295,30 @@ def test_setitem(basic_grid):
     bg[::3, ::3] = colors
     for block in bg[::3, ::3]:
         assert block.rgb == colors
+
+
+def test_to_text(capsys):
+    """
+    Test using the BlockGrid.to_text method.
+
+    """
+    bg = ipythonblocks.BlockGrid(2, 1, block_size=20)
+
+    bg[0, 0].rgb = (1, 2, 3)
+    bg[0, 1].rgb = (4, 5, 6)
+
+    ref = ['# width height',
+           '2 1',
+           '# block size',
+           '20',
+           '# initial color',
+           '0 0 0',
+           '# row column red green blue',
+           '0 0 1 2 3',
+           '0 1 4 5 6']
+    ref = os.linesep.join(ref) + os.linesep
+
+    bg.to_text()
+    out, err = capsys.readouterr()
+
+    assert out == ref

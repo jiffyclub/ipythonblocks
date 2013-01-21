@@ -12,6 +12,7 @@ import copy
 import itertools
 import numbers
 import os
+import sys
 import time
 import uuid
 
@@ -19,7 +20,6 @@ from operator import iadd
 
 from IPython.display import HTML, display, clear_output
 
-import sys
 if sys.version_info[0] >= 3:
     xrange = range
     from functools import reduce
@@ -453,6 +453,38 @@ class BlockGrid(object):
         self.show()
         time.sleep(_SLEEP_TIME)
         clear_output()
+
+    def to_text(self, filename=None):
+        """
+        Write a text file containing the size and block color information
+        for this grid.
+
+        If no file name is given the text is sent to stdout.
+
+        Parameters
+        ----------
+        filename : str, optional
+            File into which data will be written. Will be overwritten if
+            it already exists.
+
+        """
+        if filename:
+            f = open(filename, 'w')
+        else:
+            f = sys.stdout
+
+        s = ['# width height', '{0} {1}'.format(self.width, self.height),
+             '# block size', '{0}'.format(self.block_size),
+             '# initial color', '0 0 0',
+             '# row column red green blue']
+        f.write(os.linesep.join(s) + os.linesep)
+
+        for block in self:
+            things = [str(x) for x in (block.row, block.col) + block.rgb]
+            f.write(' '.join(things) + os.linesep)
+
+        if filename:
+            f.close()
 
 
 class Pixel(Block):

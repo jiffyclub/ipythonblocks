@@ -1,9 +1,10 @@
 v 1.4
 =====
 
-* The borders around cells can be toggled on and off. Turning the borders
+* The lines between cells can be toggled on and off. Turning the lines
   off can sometimes improve the aesthetics of grids, especially at small
   block sizes.
+* Added a ``BlockGrid.to_text`` method for easily sending grid data to a file.
 
 v 1.3
 =====
