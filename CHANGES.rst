@@ -5,6 +5,9 @@ v 1.4
   off can sometimes improve the aesthetics of grids, especially at small
   block sizes.
 * Added a ``BlockGrid.to_text`` method for easily sending grid data to a file.
+* Added a ``show_color`` function that just shows a stripe of a given color.
+* Added an ``embed_colorpicker`` function that embeds the website
+  http://www.colorpicker.com/ in the Notebook.
 
 v 1.3
 =====

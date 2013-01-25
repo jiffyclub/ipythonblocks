@@ -25,7 +25,8 @@ if sys.version_info[0] >= 3:
     from functools import reduce
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
-           'InvalidColorSpec', '__version__')
+           'InvalidColorSpec', 'show_color', 'embed_colorpicker',
+           '__version__')
 __version__ = '1.4dev'
 
 _TABLE = ('<style type="text/css">'
@@ -57,6 +58,30 @@ class InvalidColorSpec(Exception):
 
     """
     pass
+
+
+def show_color(red, green, blue):
+    """
+    Show a given color in the IPython Notebook.
+
+    Parameters
+    ----------
+    red, green, blue : int
+        Integers on the range [0 - 255].
+
+    """
+    div = '<div style="height: 60px; background-color: {0}"></div>'
+    display(HTML(div.format(_RGB.format(red, green, blue))))
+
+
+def embed_colorpicker():
+    """
+    Embed the web page www.colorpicker.com inside the IPython Notebook.
+
+    """
+    iframe = ('<iframe src="http://www.colorpicker.com/" '
+              'width="100%" height="550px"></iframe>')
+    display(HTML(iframe))
 
 
 class Block(object):

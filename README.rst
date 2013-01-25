@@ -14,10 +14,12 @@ arrays making them good practice for learning how to access arrays.
 
 See these demo notebooks for more on using ``ipythonblocks``:
 
+* `Practicing with RGB`_
 * `Basic usage`_ with explanations
 * `Fun examples`_
 * `Animation`_
 * `ImageGrid`_
+* Going from a `JPEG to BlockGrid`_ and text
 
 Install
 -------
@@ -35,8 +37,10 @@ you can just grab `ipythonblocks.py`_ and copy it to wherever you
 want to use it (useful for packaging with other teaching materials).
 
 .. _IPython: http://ipython.org
+.. _Practicing with RGB: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/learning_colors.ipynb
 .. _Basic usage: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_demo.ipynb
 .. _Fun examples: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_fun.ipynb
 .. _Animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_animation.ipynb
 .. _ImageGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_imagegrid.ipynb
+.. _JPEG to BlockGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/starry_night_to_text.ipynb
 .. _ipythonblocks.py: https://github.com/jiffyclub/ipythonblocks/blob/master/ipythonblocks/ipythonblocks.py
