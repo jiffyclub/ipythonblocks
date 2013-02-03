@@ -27,7 +27,7 @@ if sys.version_info[0] >= 3:
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', 'show_color', 'embed_colorpicker',
            '__version__')
-__version__ = '1.4dev'
+__version__ = '1.4'
 
 _TABLE = ('<style type="text/css">'
           'table.blockgrid {{border: none;}}'
