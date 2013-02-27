@@ -253,6 +253,18 @@ def test_getitem(basic_grid):
     assert isinstance(ng, ipythonblocks.BlockGrid)
     assert ng.shape == (2, 2)
 
+    # one column / one row with a -1 index
+    # testing fix for #7
+    ng = bg[-1, :]
+
+    assert isinstance(ng, ipythonblocks.BlockGrid)
+    assert ng.shape == (bg.width, 1)
+
+    ng = bg[1:4, -1]
+
+    assert isinstance(ng, ipythonblocks.BlockGrid)
+    assert ng.shape == (1, 3)
+
 
 def test_setitem(basic_grid):
     """

@@ -410,10 +410,16 @@ class BlockGrid(object):
         sl_height, sl_width = index
 
         if isinstance(sl_width, int):
-            sl_width = slice(sl_width, sl_width + 1)
+            if sl_width == -1:
+                sl_width = slice(sl_width, None)
+            else:
+                sl_width = slice(sl_width, sl_width + 1)
 
         if isinstance(sl_height, int):
-            sl_height = slice(sl_height, sl_height + 1)
+            if sl_height == -1:
+                sl_height = slice(sl_height, None)
+            else:
+                sl_height = slice(sl_height, sl_height + 1)
 
         rows = self._grid[sl_height]
         grid = [r[sl_width] for r in rows]
@@ -674,10 +680,16 @@ class ImageGrid(BlockGrid):
         cslice, rslice = index
 
         if isinstance(rslice, int):
-            rslice = slice(rslice, rslice + 1)
+            if rslice == -1:
+                rslice = slice(rslice, None)
+            else:
+                rslice = slice(rslice, rslice + 1)
 
         if isinstance(cslice, int):
-            cslice = slice(cslice, cslice + 1)
+            if cslice == -1:
+                cslice = slice(cslice, None)
+            else:
+                cslice = slice(cslice, cslice + 1)
 
         rows = range(self._height)[rslice]
         if self._origin == 'lower-left':
