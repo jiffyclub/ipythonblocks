@@ -70,7 +70,8 @@ def show_color(red, green, blue):
         Integers on the range [0 - 255].
 
     """
-    div = '<div style="height: 60px; background-color: {0}"></div>'
+    div = ('<div style="height: 60px; min-width: 200px; '
+           'background-color: {0}"></div>')
     display(HTML(div.format(_RGB.format(red, green, blue))))
 
 
