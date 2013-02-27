@@ -1,3 +1,9 @@
+v 1.4.1
+=======
+
+* Fixed an issue with an index of -1 in a 2D slice.
+* Fixed a display issue with show_color on Firefox.
+
 v 1.4
 =====
 
