@@ -20,6 +20,7 @@ See these demo notebooks for more on using ``ipythonblocks``:
 * `Animation`_
 * `ImageGrid`_
 * Going from a `JPEG to BlockGrid`_ and text
+* A programatic `firework animation`_
 
 Install
 -------
@@ -43,4 +44,5 @@ want to use it (useful for packaging with other teaching materials).
 .. _Animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_animation.ipynb
 .. _ImageGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_imagegrid.ipynb
 .. _JPEG to BlockGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/starry_night_to_text.ipynb
+.. _firework animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/Firework.ipynb
 .. _ipythonblocks.py: https://github.com/jiffyclub/ipythonblocks/blob/master/ipythonblocks/ipythonblocks.py
