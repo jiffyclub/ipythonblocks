@@ -1,8 +1,9 @@
-v 1.4.1
-=======
+v 1.5
+=====
 
 * Fixed an issue with an index of -1 in a 2D slice.
 * Fixed a display issue with show_color on Firefox.
+* Added a dictionary of HTML colors called ``colors``
 
 v 1.4
 =====
