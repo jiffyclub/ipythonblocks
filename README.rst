@@ -37,6 +37,19 @@ However, the package is contained in a single ``.py`` file and if you prefer
 you can just grab `ipythonblocks.py`_ and copy it to wherever you
 want to use it (useful for packaging with other teaching materials).
 
+Dependencies
+------------
+
+Required dependencies:
+
+* IPython_
+
+Optional dependencies:
+
+* pytest_ (for the test suite, see below)
+* PIL_ (for ``starry_night_to_text.ipynb``)
+
+
 Testing
 -------
 
@@ -55,3 +68,4 @@ with::
 .. _firework animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/Firework.ipynb
 .. _ipythonblocks.py: https://github.com/jiffyclub/ipythonblocks/blob/master/ipythonblocks/ipythonblocks.py
 .. _pytest: http://pytest.org/
+.. _PIL: http://www.pythonware.com/products/pil/
