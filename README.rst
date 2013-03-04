@@ -46,7 +46,7 @@ Required dependencies:
 
 Optional dependencies:
 
-* pytest_ (for the test suite, see below)
+* pytest_ (>= 2.3, for the test suite, see below)
 * PIL_ (for ``starry_night_to_text.ipynb``)
 
 
