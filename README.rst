@@ -42,6 +42,7 @@ Dependencies
 
 Required dependencies:
 
+* Python_ (>= 2.6)
 * IPython_
 
 Optional dependencies:
@@ -67,5 +68,6 @@ with::
 .. _JPEG to BlockGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/starry_night_to_text.ipynb
 .. _firework animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/Firework.ipynb
 .. _ipythonblocks.py: https://github.com/jiffyclub/ipythonblocks/blob/master/ipythonblocks/ipythonblocks.py
+.. _Python: http://python.org/
 .. _pytest: http://pytest.org/
 .. _PIL: http://www.pythonware.com/products/pil/
