@@ -37,6 +37,14 @@ However, the package is contained in a single ``.py`` file and if you prefer
 you can just grab `ipythonblocks.py`_ and copy it to wherever you
 want to use it (useful for packaging with other teaching materials).
 
+Testing
+-------
+
+The test suite is written using pytest_, so you can run the test suite
+with::
+
+    py.test
+
 .. _IPython: http://ipython.org
 .. _Practicing with RGB: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/learning_colors.ipynb
 .. _Basic usage: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/ipythonblocks_demo.ipynb
@@ -46,3 +54,4 @@ want to use it (useful for packaging with other teaching materials).
 .. _JPEG to BlockGrid: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/starry_night_to_text.ipynb
 .. _firework animation: http://nbviewer.ipython.org/urls/raw.github.com/jiffyclub/ipythonblocks/master/demos/Firework.ipynb
 .. _ipythonblocks.py: https://github.com/jiffyclub/ipythonblocks/blob/master/ipythonblocks/ipythonblocks.py
+.. _pytest: http://pytest.org/
