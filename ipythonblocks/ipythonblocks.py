@@ -392,7 +392,8 @@ class BlockGrid(object):
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
-            map(lambda b: b.set_colors(*value), self._grid[index])
+            for b in self._grid[index]:
+                b.set_colors(*value)
 
         elif ind_cat == _SINGLE_ITEM:
             self._grid[index[0]][index[1]].set_colors(*value)
@@ -404,7 +405,8 @@ class BlockGrid(object):
             elif ind_cat == _DOUBLE_SLICE:
                 sub_grid = self._get_double_slice(index)
 
-            map(lambda b: b.set_colors(*value), itertools.chain(*sub_grid))
+            for b in itertools.chain(*sub_grid):
+                b.set_colors(*value)
 
     def _get_double_slice(self, index):
         sl_height, sl_width = index
@@ -674,7 +676,8 @@ class ImageGrid(BlockGrid):
             pixels.set_colors(*value)
 
         else:
-            map(lambda p: p.set_colors(*value), itertools.chain(*pixels._grid))
+            for p in itertools.chain(*pixels._grid):
+                p.set_colors(*value)
 
     def _get_double_slice(self, index):
         cslice, rslice = index
