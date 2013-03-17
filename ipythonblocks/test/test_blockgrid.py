@@ -155,7 +155,7 @@ def test_repr_html(monkeypatch):
     (As long as the BlockGrid border is off.)
 
     """
-    bg = ipythonblocks.BlockGrid(1, 1, lines_on=False)
+    bg = ipythonblocks.BlockGrid(1, 1, lines_on=False, padding=10)
 
     monkeypatch.setattr(uuid, 'uuid4', fake_uuid)
 
