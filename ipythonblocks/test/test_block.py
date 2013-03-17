@@ -150,7 +150,7 @@ def test_repr_html(basic_block, monkeypatch):
     monkeypatch.setattr(uuid, 'uuid4', fake_uuid)
 
     table = ipythonblocks._TABLE.format(fake_uuid(), 0,
-                                        ipythonblocks._TR.format(bb._td))
+                                        ipythonblocks._TR.format(bb._td), 14)
 
     assert bb._repr_html_() == table
 

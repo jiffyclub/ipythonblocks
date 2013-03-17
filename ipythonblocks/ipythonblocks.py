@@ -35,7 +35,7 @@ _TABLE = ('<style type="text/css">'
           ' .blockgrid td {{padding: 0px;}}'
           ' #blocks{0} td {{border: {1}px solid white;}}'
           '</style>'
-          '<table id="blocks{0}" class="blockgrid"><tbody>{2}</tbody></table>')
+          '<table id="blocks{0}" class="blockgrid" style="margin-top: {3}px; margin-bottom: {3}px;"><tbody>{2}</tbody></table>')
 _TR = '<tr>{0}</tr>'
 _TD = ('<td title="{0}" style="width: {1}px; height: {1}px;'
        'background-color: {2};"></td>')
@@ -95,6 +95,8 @@ class Block(object):
         Integers on the range [0 - 255].
     size : int, optional
         Length of the sides of this block in pixels. One is the lower limit.
+    padding : int, optional
+        Padding above and below the block in pixels.
 
     Attributes
     ----------
@@ -109,14 +111,17 @@ class Block(object):
     size : int
         Length of the sides of this block in pixels. The block size can be
         changed by modifying this attribute. Note that one is the lower limit.
+    padding : int, optional
+        Padding above and below the block in pixels.
 
     """
 
-    def __init__(self, red, green, blue, size=20):
-        self.red = red
-        self.green = green
-        self.blue = blue
-        self.size = size
+    def __init__(self, red, green, blue, size=20, padding=14):
+        self._red = red
+        self._green = green
+        self._blue = blue
+        self._size = size
+        self._padding = padding
 
         self._row = None
         self._col = None
@@ -170,7 +175,7 @@ class Block(object):
             s = 'Setting colors requires three values: (red, green, blue).'
             raise ValueError(s)
 
-        self.red, self.green, self.blue = colors
+        self._red, self._green, self._blue = colors
 
     @property
     def row(self):
@@ -188,6 +193,10 @@ class Block(object):
     def size(self, size):
         self._size = max(_SMALLEST_BLOCK, size)
 
+    @property
+    def padding(self):
+        return self._padding
+
     def set_colors(self, red, green, blue):
         """
         Updated block colors.
@@ -198,9 +207,9 @@ class Block(object):
             Integers on the range [0 - 255].
 
         """
-        self.red = red
-        self.green = green
-        self.blue = blue
+        self._red = red
+        self._green = green
+        self._blue = blue
 
     @property
     def _td(self):
@@ -214,7 +223,7 @@ class Block(object):
         return _TD.format(title, self._size, rgb)
 
     def _repr_html_(self):
-        return _TABLE.format(uuid.uuid4(), 0, _TR.format(self._td))
+        return _TABLE.format(uuid.uuid4(), 0, _TR.format(self._td), int(self._padding))
 
     def show(self):
         display(HTML(self._repr_html_()))
@@ -249,6 +258,8 @@ class BlockGrid(object):
         Length of the sides of grid blocks in pixels. One is the lower limit.
     lines_on : bool, optional
         Whether or not to display lines between blocks.
+    padding : int, optional
+        Padding above and below the grid in pixels.
 
     Attributes
     ----------
@@ -264,19 +275,22 @@ class BlockGrid(object):
     lines_on : bool
         Whether lines are shown between blocks when the grid is displayed.
         This attribute can used to toggle the whether the lines appear.
+    padding : int
+        Padding above and below the grid in pixels.
 
     """
 
     def __init__(self, width, height, fill=(0, 0, 0),
-                 block_size=20, lines_on=True):
+                 block_size=20, lines_on=True, padding=14):
         self._width = width
         self._height = height
         self._block_size = block_size
         self.lines_on = lines_on
+        self._padding = padding
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
-        grid = [[Block(*fill, size=self._block_size)
+        grid = [[Block(*fill, size=self._block_size, padding=self._padding)
                 for col in xrange(self.width)]
                 for row in xrange(self.height)]
 
@@ -316,6 +330,10 @@ class BlockGrid(object):
             raise ValueError(s)
 
         self._lines_on = value
+
+    @property
+    def padding(self):
+        return self._padding
 
     @classmethod
     def _view_from_grid(cls, grid):
@@ -457,7 +475,7 @@ class BlockGrid(object):
                                           for c in cols)))
                        for r in rows))
 
-        return _TABLE.format(uuid.uuid4(), int(self._lines_on), html)
+        return _TABLE.format(uuid.uuid4(), int(self._lines_on), html, int(self._padding))
 
     def __str__(self):
         s = ['{0}'.format(self.__class__.__name__),
@@ -722,7 +740,7 @@ class ImageGrid(BlockGrid):
                                           for c in cols)))
                        for r in rows))
 
-        return _TABLE.format(uuid.uuid4(), int(self._lines_on), html)
+        return _TABLE.format(uuid.uuid4(), int(self._lines_on), html, int(self._padding))
 
 
 # As a convenience, provide the named HTML colors as a dictionary.
