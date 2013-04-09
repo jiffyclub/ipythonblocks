@@ -202,6 +202,40 @@ class Block(object):
         self.green = green
         self.blue = blue
 
+    def set_color_by_name(self, name):
+        """
+        Update block color using a named color.
+
+        Parameters
+        ----------
+        name : str
+            The name of a color. Currently supports 'red', 'green', or 'blue'
+
+        """
+        # HTML 4 color names
+        names_to_rgb = {'aqua': (0, 255, 255),
+                        'black': (0, 0, 0),
+                        'blue': (0, 0, 255),
+                        'fuchsia': (255, 0, 255),
+                        'green': (0, 128, 0),
+                        'grey': (128, 128, 128),
+                        'lime': (0, 255, 0),
+                        'maroon': (128, 0, 0),
+                        'navy': (0, 0, 128),
+                        'olive': (128, 128, 0),
+                        'purple': (128, 0, 128),
+                        'red': (255, 0, 0),
+                        'silver': (192, 192, 192),
+                        'teal': (0, 128, 128),
+                        'white': (255, 255, 255),
+                        'yellow': (255, 255, 0)}
+
+        normalized = name.lower()
+        if normalized not in names_to_rgb:
+            s = 'value must be a valid color name. got {0}.'.format(name)
+            raise InvalidColorSpec(s)
+        self.red, self.green, self.blue = names_to_rgb[normalized]
+
     @property
     def _td(self):
         """
