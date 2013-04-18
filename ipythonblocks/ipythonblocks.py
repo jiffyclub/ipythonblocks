@@ -431,16 +431,20 @@ class BlockGrid(object):
             for c in xrange(self.width):
                 yield self[r, c]
 
-    @property
-    def animate(self):
+    def animate(self, stop_time=0.2):
         """
-        Iterate over this property to have your changes to the grid
+        Call this method in a loop definition to have your changes to the grid
         animated in the IPython Notebook.
+
+        Parameters
+        ----------
+        stop_time : float
+            Amount of time to pause between loop steps.
 
         """
         for block in self:
             self.show()
-            time.sleep(0.2)
+            time.sleep(stop_time)
             yield block
             clear_output()
         self.show()
