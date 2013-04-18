@@ -1,3 +1,8 @@
+v 1.6
+=====
+
+* Added a ``display_time`` keyword to the ``flash()`` method.
+
 v 1.5
 =====
 

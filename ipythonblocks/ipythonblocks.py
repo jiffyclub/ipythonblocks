@@ -49,8 +49,6 @@ _DOUBLE_SLICE = 'double slice'
 
 _SMALLEST_BLOCK = 1
 
-_SLEEP_TIME = 0.2
-
 
 class InvalidColorSpec(Exception):
     """
@@ -442,7 +440,7 @@ class BlockGrid(object):
         """
         for block in self:
             self.show()
-            time.sleep(_SLEEP_TIME)
+            time.sleep(0.2)
             yield block
             clear_output()
         self.show()
@@ -479,13 +477,20 @@ class BlockGrid(object):
         """
         display(HTML(self._repr_html_()))
 
-    def flash(self):
+    def flash(self, display_time=0.2):
         """
-        Display the grid for a short time. Useful for making an animation.
+        Display the grid for a time.
+
+        Useful for making an animation or iteratively displaying changes.
+
+        Parameters
+        ----------
+        display_time : float
+            Amount of time, in seconds, to display the grid.
 
         """
         self.show()
-        time.sleep(_SLEEP_TIME)
+        time.sleep(display_time)
         clear_output()
 
     def to_text(self, filename=None):
