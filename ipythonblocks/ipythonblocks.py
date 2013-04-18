@@ -315,8 +315,7 @@ class BlockGrid(object):
 
         self._lines_on = value
 
-    @classmethod
-    def _view_from_grid(cls, grid):
+    def _view_from_grid(self, grid):
         """
         Make a new grid from a list of lists of Block objects.
 
@@ -324,7 +323,9 @@ class BlockGrid(object):
         new_width = len(grid[0])
         new_height = len(grid)
 
-        new_BG = cls(new_width, new_height)
+        new_BG = self.__class__(new_width, new_height,
+                                block_size=self._block_size,
+                                lines_on=self._lines_on)
         new_BG._grid = grid
 
         return new_BG
