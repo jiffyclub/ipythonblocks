@@ -267,7 +267,7 @@ class BlockGrid(object):
 
     """
 
-    def __init__(self, width, height=None, fill=(0, 0, 0),
+    def __init__(self, width, height=0, fill=(0, 0, 0),
                  block_size=20, lines_on=True):
         self._width = width
         self._block_size = block_size
@@ -399,7 +399,7 @@ class BlockGrid(object):
             if self._ndim == 2:
                 return self._view_from_grid(self._grid[index])
             else:
-                block = self._grid[0, index]
+                block = self._grid[0][index]
                 block._row, block._col = 0, index
                 return block
 
@@ -409,7 +409,10 @@ class BlockGrid(object):
             return block
 
         elif ind_cat == _SINGLE_SLICE:
-            return self._view_from_grid(self._grid[index])
+            if self._ndim == 2:
+                return self._view_from_grid(self._grid[index])
+            else:
+                return self._view_from_grid(self._grid[0][index])
 
         elif ind_cat == _DOUBLE_SLICE:
             new_grid = self._get_double_slice(index)
@@ -427,7 +430,7 @@ class BlockGrid(object):
                 for b in self._grid[index]:
                     b.set_colors(*value)
             else:
-                self._grid[0, index].set_colors(*value)
+                self._grid[0][index].set_colors(*value)
 
         elif ind_cat == _SINGLE_ITEM:
             self._grid[index[0]][index[1]].set_colors(*value)
