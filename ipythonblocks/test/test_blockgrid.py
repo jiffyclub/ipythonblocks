@@ -221,7 +221,7 @@ def test_getitem(basic_grid):
     ng = bg[2]
 
     assert isinstance(ng, ipythonblocks.BlockGrid)
-    assert ng.shape == (bg.width, 1)
+    assert ng.shape == (bg.width,)
 
     # two rows
     ng = bg[1:3]
