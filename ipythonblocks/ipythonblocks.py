@@ -21,7 +21,6 @@ from operator import iadd
 from IPython.display import HTML, display, clear_output
 
 if sys.version_info[0] >= 3:
-    xrange = range
     from functools import reduce
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
@@ -275,8 +274,8 @@ class BlockGrid(object):
 
     def _initialize_grid(self, fill):
         grid = [[Block(*fill, size=self._block_size)
-                for col in xrange(self.width)]
-                for row in xrange(self.height)]
+                for col in range(self.width)]
+                for row in range(self.height)]
 
         self._grid = grid
 
@@ -428,8 +427,8 @@ class BlockGrid(object):
         return grid
 
     def __iter__(self):
-        for r in xrange(self.height):
-            for c in xrange(self.width):
+        for r in range(self.height):
+            for c in range(self.width):
                 yield self[r, c]
 
     def animate(self, stop_time=0.2):
@@ -623,8 +622,8 @@ class ImageGrid(BlockGrid):
 
     def _initialize_grid(self, fill):
         grid = [[Pixel(*fill, size=self._block_size)
-                for col in xrange(self.width)]
-                for row in xrange(self.height)]
+                for col in range(self.width)]
+                for row in range(self.height)]
 
         self._grid = grid
 
@@ -715,8 +714,8 @@ class ImageGrid(BlockGrid):
         return new_grid
 
     def __iter__(self):
-        for col in xrange(self.width):
-            for row in xrange(self.height):
+        for col in range(self.width):
+            for row in range(self.height):
                 yield self[col, row]
 
     def _repr_html_(self):
