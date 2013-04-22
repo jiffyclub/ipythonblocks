@@ -42,7 +42,7 @@ _TD = ('<td title="{0}" style="width: {1}px; height: {1}px;'
 _RGB = 'rgb({0}, {1}, {2})'
 _TITLE = 'Index: [{0}, {1}]&#10;Color: ({2}, {3}, {4})'
 
-_SINGLE_ITEM = 'single item'
+_DOUBLE_INT = 'double int'
 _SINGLE_INT = 'single int'
 _SINGLE_SLICE = 'single slice'
 _DOUBLE_SLICE = 'double slice'
@@ -388,7 +388,7 @@ class BlockGrid(object):
                     return _DOUBLE_SLICE
 
             elif isinstance(index[0], int) and isinstance(index[0], int):
-                return _SINGLE_ITEM
+                return _DOUBLE_INT
 
         raise IndexError('Invalid index.')
 
@@ -403,7 +403,7 @@ class BlockGrid(object):
                 block._row, block._col = 0, index
                 return block
 
-        elif ind_cat == _SINGLE_ITEM:
+        elif ind_cat == _DOUBLE_INT:
             block = self._grid[index[0]][index[1]]
             block._row, block._col = index
             return block
@@ -432,7 +432,7 @@ class BlockGrid(object):
             else:
                 self._grid[0][index].set_colors(*value)
 
-        elif ind_cat == _SINGLE_ITEM:
+        elif ind_cat == _DOUBLE_INT:
             self._grid[index[0]][index[1]].set_colors(*value)
 
         else:
@@ -699,11 +699,11 @@ class ImageGrid(BlockGrid):
         ind_cat = self._categorize_index(index)
 
         # ImageGrid will only support single item indexing and 2D slices
-        if ind_cat not in (_DOUBLE_SLICE, _SINGLE_ITEM):
+        if ind_cat not in (_DOUBLE_SLICE, _DOUBLE_INT):
             s = 'ImageGrid only supports 2D indexing.'
             raise IndexError(s)
 
-        if ind_cat == _SINGLE_ITEM:
+        if ind_cat == _DOUBLE_INT:
             real_index = self._transform_index(index)
             pixel = self._grid[real_index[0]][real_index[1]]
             pixel._col, pixel._row = index
