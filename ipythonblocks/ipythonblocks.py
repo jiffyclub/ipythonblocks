@@ -42,9 +42,9 @@ _TD = ('<td title="{0}" style="width: {1}px; height: {1}px;'
 _RGB = 'rgb({0}, {1}, {2})'
 _TITLE = 'Index: [{0}, {1}]&#10;Color: ({2}, {3}, {4})'
 
-_SINGLE_ITEM = 'single item'
-_SINGLE_ROW = 'single row'
-_ROW_SLICE = 'row slice'
+_DOUBLE_INT = 'double int'
+_SINGLE_INT = 'single int'
+_SINGLE_SLICE = 'single slice'
 _DOUBLE_SLICE = 'double slice'
 
 _SMALLEST_BLOCK = 1
@@ -200,6 +200,14 @@ class Block(object):
         self.green = green
         self.blue = blue
 
+    def _set_row_col(self, row, col):
+        """
+        Set the reported .row and .col values for this Block.
+
+        """
+        self._row = row
+        self._col = col
+
     @property
     def _td(self):
         """
@@ -238,7 +246,7 @@ class BlockGrid(object):
     ----------
     width : int
         Number of blocks wide to make the grid.
-    height : int
+    height : int, optional
         Number of blocks high to make the grid.
     fill : tuple of int, optional
         An optional initial color for the grid, defaults to black.
@@ -254,6 +262,8 @@ class BlockGrid(object):
         Number of blocks along the width of the grid.
     height : int
         Number of blocks along the height of the grid.
+    ndim : {1, 2}
+        Number of dimensions in grid.
     shape : tuple of int
         A tuple of (width, height).
     block_size : int
@@ -265,18 +275,25 @@ class BlockGrid(object):
 
     """
 
-    def __init__(self, width, height, fill=(0, 0, 0),
+    def __init__(self, width, height=0, fill=(0, 0, 0),
                  block_size=20, lines_on=True):
         self._width = width
-        self._height = height
         self._block_size = block_size
         self.lines_on = lines_on
+
+        if height:
+            self._ndim = 2
+            self._height = height
+        else:
+            self._ndim = 1
+            self._height = 1
+
         self._initialize_grid(fill)
 
     def _initialize_grid(self, fill):
         grid = [[Block(*fill, size=self._block_size)
-                for col in xrange(self.width)]
-                for row in xrange(self.height)]
+                 for col in xrange(self._width)]
+                for row in xrange(self._height)]
 
         self._grid = grid
 
@@ -286,11 +303,21 @@ class BlockGrid(object):
 
     @property
     def height(self):
-        return self._height
+        if self._ndim == 2:
+            return self._height
+        else:
+            return 0
 
     @property
     def shape(self):
-        return (self._width, self._height)
+        if self._ndim == 2:
+            return (self._width, self._height)
+        else:
+            return (self._width,)
+
+    @property
+    def ndim(self):
+        return self._ndim
 
     @property
     def block_size(self):
@@ -320,8 +347,16 @@ class BlockGrid(object):
         Make a new grid from a list of lists of Block objects.
 
         """
-        new_width = len(grid[0])
-        new_height = len(grid)
+        # making a 2D grid
+        if isinstance(grid[0], list):
+            new_width = len(grid[0])
+            new_height = len(grid)
+
+        # making a 1D grid
+        else:
+            new_width = len(grid)
+            new_height = None
+            grid = [grid]
 
         new_BG = self.__class__(new_width, new_height,
                                 block_size=self._block_size,
@@ -338,10 +373,10 @@ class BlockGrid(object):
 
         """
         if isinstance(index, int):
-            return _SINGLE_ROW
+            return _SINGLE_INT
 
         elif isinstance(index, slice):
-            return _ROW_SLICE
+            return _SINGLE_SLICE
 
         elif isinstance(index, tuple):
             if len(index) > 2:
@@ -361,23 +396,31 @@ class BlockGrid(object):
                     return _DOUBLE_SLICE
 
             elif isinstance(index[0], int) and isinstance(index[0], int):
-                return _SINGLE_ITEM
+                return _DOUBLE_INT
 
         raise IndexError('Invalid index.')
 
     def __getitem__(self, index):
         ind_cat = self._categorize_index(index)
 
-        if ind_cat == _SINGLE_ROW:
-            return self._view_from_grid([self._grid[index]])
+        if ind_cat == _SINGLE_INT:
+            if self._ndim == 2:
+                return self._view_from_grid(self._grid[index])
+            else:
+                block = self._grid[0][index]
+                block._row, block._col = 0, index
+                return block
 
-        elif ind_cat == _SINGLE_ITEM:
+        elif ind_cat == _DOUBLE_INT:
             block = self._grid[index[0]][index[1]]
             block._row, block._col = index
             return block
 
-        elif ind_cat == _ROW_SLICE:
-            return self._view_from_grid(self._grid[index])
+        elif ind_cat == _SINGLE_SLICE:
+            if self._ndim == 2:
+                return self._view_from_grid(self._grid[index])
+            else:
+                return self._view_from_grid(self._grid[0][index])
 
         elif ind_cat == _DOUBLE_SLICE:
             new_grid = self._get_double_slice(index)
@@ -390,15 +433,18 @@ class BlockGrid(object):
 
         ind_cat = self._categorize_index(index)
 
-        if ind_cat == _SINGLE_ROW:
-            for b in self._grid[index]:
-                b.set_colors(*value)
+        if ind_cat == _SINGLE_INT:
+            if self._ndim == 2:
+                for b in self._grid[index]:
+                    b.set_colors(*value)
+            else:
+                self._grid[0][index].set_colors(*value)
 
-        elif ind_cat == _SINGLE_ITEM:
+        elif ind_cat == _DOUBLE_INT:
             self._grid[index[0]][index[1]].set_colors(*value)
 
         else:
-            if ind_cat == _ROW_SLICE:
+            if ind_cat == _SINGLE_SLICE:
                 sub_grid = self._grid[index]
 
             elif ind_cat == _DOUBLE_SLICE:
@@ -428,8 +474,8 @@ class BlockGrid(object):
         return grid
 
     def __iter__(self):
-        for r in xrange(self.height):
-            for c in xrange(self.width):
+        for r in xrange(self._height):
+            for c in xrange(self._width):
                 yield self[r, c]
 
     def animate(self, stop_time=0.2):
@@ -661,14 +707,14 @@ class ImageGrid(BlockGrid):
         ind_cat = self._categorize_index(index)
 
         # ImageGrid will only support single item indexing and 2D slices
-        if ind_cat not in (_DOUBLE_SLICE, _SINGLE_ITEM):
+        if ind_cat not in (_DOUBLE_SLICE, _DOUBLE_INT):
             s = 'ImageGrid only supports 2D indexing.'
             raise IndexError(s)
 
-        if ind_cat == _SINGLE_ITEM:
+        if ind_cat == _DOUBLE_INT:
             real_index = self._transform_index(index)
             pixel = self._grid[real_index[0]][real_index[1]]
-            pixel._col, pixel._row = index
+            pixel._set_row_col(*real_index)
             return pixel
 
         elif ind_cat == _DOUBLE_SLICE:
