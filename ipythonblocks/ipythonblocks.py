@@ -200,6 +200,14 @@ class Block(object):
         self.green = green
         self.blue = blue
 
+    def _set_row_col(self, row, col):
+        """
+        Set the reported .row and .col values for this Block.
+
+        """
+        self._row = row
+        self._col = col
+
     @property
     def _td(self):
         """
@@ -706,7 +714,7 @@ class ImageGrid(BlockGrid):
         if ind_cat == _DOUBLE_INT:
             real_index = self._transform_index(index)
             pixel = self._grid[real_index[0]][real_index[1]]
-            pixel._col, pixel._row = index
+            pixel._set_row_col(*real_index)
             return pixel
 
         elif ind_cat == _DOUBLE_SLICE:

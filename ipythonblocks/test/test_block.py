@@ -98,6 +98,19 @@ def test_set_colors(basic_block):
     assert bb.blue == 202
 
 
+def test_set_row_col(basic_block):
+    """
+    Test setting the row and column via the convenient method.
+
+    """
+    bb = basic_block
+
+    bb._set_row_col(8, 9)
+
+    assert bb.row == 8
+    assert bb.col == 9
+
+
 def test_rgb_attr(basic_block):
     """
     Test out the .rgb attribute.
