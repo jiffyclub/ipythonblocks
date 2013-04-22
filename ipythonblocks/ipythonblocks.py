@@ -17,11 +17,9 @@ import time
 import uuid
 
 from operator import iadd
+from functools import reduce
 
 from IPython.display import HTML, display, clear_output
-
-if sys.version_info[0] >= 3:
-    from functools import reduce
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', 'show_color', 'embed_colorpicker',
