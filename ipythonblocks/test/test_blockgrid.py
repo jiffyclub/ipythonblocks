@@ -308,6 +308,14 @@ def test_setitem(basic_grid):
     for block in bg[::3, ::3]:
         assert block.rgb == colors
 
+def test_setitem_to_block(basic_grid):
+    """
+    Test assigning a Block to a BlockGrid.
+    """
+    bg = basic_grid
+    bg[0, 0] = (0, 0, 0)
+    bg[1, 1] = bg[0, 0]
+    assert bg[0, 0].rgb == bg[1, 1].rgb
 
 def test_to_text(capsys):
     """

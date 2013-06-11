@@ -179,3 +179,12 @@ def test_str2(basic_block):
     s = os.linesep.join(['Block [8, 9]', 'Color: (5, 6, 7)'])
 
     assert bb.__str__() == s
+
+def test_repr(basic_block):
+    assert repr(basic_block) == "Block(5, 6, 7, size=20)"
+
+def test_len(basic_block):
+    assert len(basic_block) == 3
+
+def test_iterable(basic_block):
+    assert tuple(basic_block) == (5, 6, 7)

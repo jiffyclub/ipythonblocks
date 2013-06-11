@@ -214,6 +214,12 @@ class Block(object):
     def show(self):
         display(HTML(self._repr_html_()))
 
+    def __len__(self):
+        return 3
+
+    def __getitem__(self, index):
+        return self.rgb[index]
+
     def __str__(self):
         s = ['{0}'.format(self.__class__.__name__),
              'Color: ({0}, {1}, {2})'.format(self._red,
@@ -225,6 +231,14 @@ class Block(object):
             s[0] += ' [{0}, {1}]'.format(self._row, self._col)
 
         return os.linesep.join(s)
+
+    def __repr__(self):
+        type_name = type(self).__name__
+        return '{0}({1}, {2}, {3}, size={4})'.format(type_name,
+                                                     self.red,
+                                                     self.green,
+                                                     self.blue,
+                                                     self.size)
 
 
 class BlockGrid(object):
