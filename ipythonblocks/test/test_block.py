@@ -198,3 +198,17 @@ def test_eq():
 def test_hash(basic_block):
     with pytest.raises(TypeError):
         set([basic_block])
+
+def test_update():
+    b1 = ipythonblocks.Block(0, 0, 0)
+    b2 = ipythonblocks.Block(1, 1, 1, size=30)
+
+    b1._update((42, 42, 42))
+    assert b1.rgb == (42, 42, 42)
+
+    b1._update(b2)
+    assert b1.rgb == b2.rgb
+    assert b1.size == b2.size
+
+    with pytest.raises(ValueError):
+        b1._update((1, 2, 3, 4))
