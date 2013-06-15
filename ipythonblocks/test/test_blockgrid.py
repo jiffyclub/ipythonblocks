@@ -315,7 +315,8 @@ def test_setitem_to_block(basic_grid):
     bg = basic_grid
     bg[0, 0] = (0, 0, 0)
     bg[1, 1] = bg[0, 0]
-    assert bg[0, 0].rgb == bg[1, 1].rgb
+    assert bg[0, 0] == bg[1, 1]
+    assert bg[1, 1].rgb == (0, 0, 0)
 
 def test_to_text(capsys):
     """

@@ -183,8 +183,18 @@ def test_str2(basic_block):
 def test_repr(basic_block):
     assert repr(basic_block) == "Block(5, 6, 7, size=20)"
 
-def test_len(basic_block):
-    assert len(basic_block) == 3
+def test_eq():
+    b1 = ipythonblocks.Block(0, 0, 0)
+    b2 = ipythonblocks.Block(0, 0, 0)
+    b3 = ipythonblocks.Block(1, 1, 1)
+    b4 = ipythonblocks.Block(0, 0, 0, size=30)
 
-def test_iterable(basic_block):
-    assert tuple(basic_block) == (5, 6, 7)
+    assert b1 == b1
+    assert b1 == b2
+    assert b1 != b3
+    assert b1 != b4
+    assert b1 != 42
+
+def test_hash(basic_block):
+    with pytest.raises(TypeError):
+        set([basic_block])

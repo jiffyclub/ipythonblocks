@@ -197,6 +197,16 @@ class Block(object):
         self.green = green
         self.blue = blue
 
+    def _update(self, other):
+        if isinstance(other, Block):
+            self.rgb = other.rgb
+            self.size = other.size
+        elif len(other) == 3:
+            self.rgb = other
+        else:
+            errmsg = 'Value must be a Block or have 3 integers. Got {0!r}.'
+            raise ValueError(errmsg.format(other))
+
     @property
     def _td(self):
         """
@@ -214,11 +224,12 @@ class Block(object):
     def show(self):
         display(HTML(self._repr_html_()))
 
-    def __len__(self):
-        return 3
+    __hash__ = None
 
-    def __getitem__(self, index):
-        return self.rgb[index]
+    def __eq__(self, other):
+        if not isinstance(other, Block):
+            raise NotImplemented
+        return self.rgb == other.rgb and self.size == other.size
 
     def __str__(self):
         s = ['{0}'.format(self.__class__.__name__),
@@ -395,18 +406,14 @@ class BlockGrid(object):
             return self._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
-        if len(value) != 3:
-            s = 'Assigned value must have three integers. got {0}.'
-            raise ValueError(s.format(value))
-
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
             for b in self._grid[index]:
-                b.set_colors(*value)
+                b._update(value)
 
         elif ind_cat == _SINGLE_ITEM:
-            self._grid[index[0]][index[1]].set_colors(*value)
+            self._grid[index[0]][index[1]]._update(value)
 
         else:
             if ind_cat == _ROW_SLICE:
@@ -416,7 +423,7 @@ class BlockGrid(object):
                 sub_grid = self._get_double_slice(index)
 
             for b in itertools.chain(*sub_grid):
-                b.set_colors(*value)
+                b._update(value)
 
     def _get_double_slice(self, index):
         sl_height, sl_width = index
