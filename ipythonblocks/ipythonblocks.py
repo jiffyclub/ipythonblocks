@@ -9,6 +9,7 @@ practicing control flow stuctures and quickly seeing the results.
 # https://github.com/jiffyclub/ipythonblocks/blob/master/LICENSE.txt
 
 import copy
+import collections
 import itertools
 import numbers
 import os
@@ -201,10 +202,13 @@ class Block(object):
         if isinstance(other, Block):
             self.rgb = other.rgb
             self.size = other.size
-        elif len(other) == 3:
+        elif isinstance(other, collections.Sequence) and len(other) == 3:
             self.rgb = other
         else:
-            errmsg = 'Value must be a Block or have 3 integers. Got {0!r}.'
+            errmsg = (
+                'Value must be a Block or a sequence of 3 integers. '
+                'Got {0!r}.'
+            )
             raise ValueError(errmsg.format(other))
 
     @property
