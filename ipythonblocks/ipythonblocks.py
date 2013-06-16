@@ -698,18 +698,14 @@ class ImageGrid(BlockGrid):
             return self._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
-        if len(value) != 3:
-            s = 'Assigned value must have three integers. got {0}.'
-            raise ValueError(s.format(value))
-
         pixels = self[index]
 
         if isinstance(pixels, Pixel):
-            pixels.set_colors(*value)
+            pixels._update(value)
 
         else:
             for p in itertools.chain(*pixels._grid):
-                p.set_colors(*value)
+                p._update(value)
 
     def _get_double_slice(self, index):
         cslice, rslice = index
