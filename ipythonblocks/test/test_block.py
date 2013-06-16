@@ -179,3 +179,36 @@ def test_str2(basic_block):
     s = os.linesep.join(['Block [8, 9]', 'Color: (5, 6, 7)'])
 
     assert bb.__str__() == s
+
+def test_repr(basic_block):
+    assert repr(basic_block) == "Block(5, 6, 7, size=20)"
+
+def test_eq():
+    b1 = ipythonblocks.Block(0, 0, 0)
+    b2 = ipythonblocks.Block(0, 0, 0)
+    b3 = ipythonblocks.Block(1, 1, 1)
+    b4 = ipythonblocks.Block(0, 0, 0, size=30)
+
+    assert b1 == b1
+    assert b1 == b2
+    assert b1 != b3
+    assert b1 != b4
+    assert b1 != 42
+
+def test_hash(basic_block):
+    with pytest.raises(TypeError):
+        set([basic_block])
+
+def test_update():
+    b1 = ipythonblocks.Block(0, 0, 0)
+    b2 = ipythonblocks.Block(1, 1, 1, size=30)
+
+    b1._update((42, 42, 42))
+    assert b1.rgb == (42, 42, 42)
+
+    b1._update(b2)
+    assert b1.rgb == b2.rgb
+    assert b1.size == b2.size
+
+    with pytest.raises(ValueError):
+        b1._update((1, 2, 3, 4))

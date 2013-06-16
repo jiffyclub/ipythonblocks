@@ -9,6 +9,7 @@ practicing control flow stuctures and quickly seeing the results.
 # https://github.com/jiffyclub/ipythonblocks/blob/master/LICENSE.txt
 
 import copy
+import collections
 import itertools
 import numbers
 import os
@@ -197,6 +198,19 @@ class Block(object):
         self.green = green
         self.blue = blue
 
+    def _update(self, other):
+        if isinstance(other, Block):
+            self.rgb = other.rgb
+            self.size = other.size
+        elif isinstance(other, collections.Sequence) and len(other) == 3:
+            self.rgb = other
+        else:
+            errmsg = (
+                'Value must be a Block or a sequence of 3 integers. '
+                'Got {0!r}.'
+            )
+            raise ValueError(errmsg.format(other))
+
     @property
     def _td(self):
         """
@@ -214,6 +228,13 @@ class Block(object):
     def show(self):
         display(HTML(self._repr_html_()))
 
+    __hash__ = None
+
+    def __eq__(self, other):
+        if not isinstance(other, Block):
+            raise NotImplemented
+        return self.rgb == other.rgb and self.size == other.size
+
     def __str__(self):
         s = ['{0}'.format(self.__class__.__name__),
              'Color: ({0}, {1}, {2})'.format(self._red,
@@ -225,6 +246,14 @@ class Block(object):
             s[0] += ' [{0}, {1}]'.format(self._row, self._col)
 
         return os.linesep.join(s)
+
+    def __repr__(self):
+        type_name = type(self).__name__
+        return '{0}({1}, {2}, {3}, size={4})'.format(type_name,
+                                                     self.red,
+                                                     self.green,
+                                                     self.blue,
+                                                     self.size)
 
 
 class BlockGrid(object):
@@ -381,18 +410,14 @@ class BlockGrid(object):
             return self._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
-        if len(value) != 3:
-            s = 'Assigned value must have three integers. got {0}.'
-            raise ValueError(s.format(value))
-
         ind_cat = self._categorize_index(index)
 
         if ind_cat == _SINGLE_ROW:
             for b in self._grid[index]:
-                b.set_colors(*value)
+                b._update(value)
 
         elif ind_cat == _SINGLE_ITEM:
-            self._grid[index[0]][index[1]].set_colors(*value)
+            self._grid[index[0]][index[1]]._update(value)
 
         else:
             if ind_cat == _ROW_SLICE:
@@ -402,7 +427,7 @@ class BlockGrid(object):
                 sub_grid = self._get_double_slice(index)
 
             for b in itertools.chain(*sub_grid):
-                b.set_colors(*value)
+                b._update(value)
 
     def _get_double_slice(self, index):
         sl_height, sl_width = index
@@ -673,18 +698,14 @@ class ImageGrid(BlockGrid):
             return self._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
-        if len(value) != 3:
-            s = 'Assigned value must have three integers. got {0}.'
-            raise ValueError(s.format(value))
-
         pixels = self[index]
 
         if isinstance(pixels, Pixel):
-            pixels.set_colors(*value)
+            pixels._update(value)
 
         else:
             for p in itertools.chain(*pixels._grid):
-                p.set_colors(*value)
+                p._update(value)
 
     def _get_double_slice(self, index):
         cslice, rslice = index
