@@ -30,3 +30,6 @@ htmlcov
 
 #Mr Developer
 .mr.developer.cfg
+
+# Vim
+*.sw[o-z]

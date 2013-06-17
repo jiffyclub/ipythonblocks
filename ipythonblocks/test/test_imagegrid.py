@@ -118,3 +118,10 @@ def test_setitem_lower_left_slice(lower_left):
         assert pix.red == 201
         assert pix.green == 202
         assert pix.blue == 203
+
+def test_slice_assignment(lower_left):
+    ll = lower_left
+
+    ll[1, 1] = (42, 42, 42)
+    ll[0, 0] = ll[1, 1]
+    assert ll[0, 0].rgb == (42, 42, 42)
