@@ -692,6 +692,10 @@ class ImageGrid(BlockGrid):
             raise IndexError(s)
 
         if ind_cat == _SINGLE_ITEM:
+            # should be able to index ._grid with new_ind regardless of any
+            # following coordinate transforms. let's just make sure.
+            self._grid[index[1]][index[0]]
+
             real_index = self._transform_index(index)
             pixel = self._grid[real_index[0]][real_index[1]]
             pixel._col, pixel._row = index
