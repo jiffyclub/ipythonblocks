@@ -11,6 +11,7 @@ practicing control flow stuctures and quickly seeing the results.
 import copy
 import collections
 import itertools
+import math
 import numbers
 import os
 import sys
@@ -675,7 +676,10 @@ class ImageGrid(BlockGrid):
         # now take into account that the ImageGrid origin may be lower-left,
         # while the ._grid origin is upper-left.
         if self._origin == 'lower-left':
-            new_ind[0] = self._height - new_ind[0] - 1
+            if new_ind[0] >= 0:
+                new_ind[0] = self._height - new_ind[0] - 1
+            else:
+                new_ind[0] = abs(new_ind[0]) - 1
 
         return tuple(new_ind)
 
