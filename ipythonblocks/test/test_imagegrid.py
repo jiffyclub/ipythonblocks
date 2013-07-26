@@ -106,6 +106,18 @@ def test_getitem_lower_left_single(lower_left):
             assert ll[col, row] is ll._grid[trow][col]
 
 
+def test_getitem_lower_left_single_neg(lower_left):
+    ll = lower_left
+
+    ll[1, 2] = (1, 2, 3)
+
+    pix = ll[-1, -1]
+
+    assert pix.red == 1
+    assert pix.green == 2
+    assert pix.blue == 3
+
+
 def test_getitem_lower_left_slice(lower_left):
     ll = lower_left
 
