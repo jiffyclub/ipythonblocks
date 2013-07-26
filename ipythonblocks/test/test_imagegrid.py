@@ -37,7 +37,7 @@ def test_basic_api(upper_left, lower_left):
         ul.block_size = 50
 
 
-def test_getitem_bad_index(upper_left):
+def test_getitem_bad_index_ul(upper_left):
     ul = upper_left
 
     with pytest.raises(IndexError):
@@ -45,6 +45,28 @@ def test_getitem_bad_index(upper_left):
 
     with pytest.raises(IndexError):
         ul[1:]
+
+    with pytest.raises(IndexError):
+        ul[0, 3]
+
+    with pytest.raises(IndexError):
+        ul[2, 0]
+
+
+def test_getitem_bad_index_ll(lower_left):
+    ll = lower_left
+
+    with pytest.raises(IndexError):
+        ll[1]
+
+    with pytest.raises(IndexError):
+        ll[1:]
+
+    with pytest.raises(IndexError):
+        ll[0, 3]
+
+    with pytest.raises(IndexError):
+        ll[2, 0]
 
 
 def test_setitem_bad_index(upper_left):

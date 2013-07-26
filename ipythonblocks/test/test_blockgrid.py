@@ -192,6 +192,12 @@ def test_bad_index(basic_grid):
     with pytest.raises(TypeError):
         bg[1, ]
 
+    with pytest.raises(IndexError):
+        bg[0, 5]
+
+    with pytest.raises(IndexError):
+        bg[6, 0]
+
 
 def test_bad_colors(basic_grid):
     """
