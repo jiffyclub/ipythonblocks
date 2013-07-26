@@ -5,6 +5,9 @@ v 1.6
 * Changed the ``animate`` property to a method so that it can take
   a ``stop_time`` keyword to control the amount of time between loop steps.
 * Fixed an error with improperly set attributes on views of grids.
+* Fixed negative indexing in lower-left origin ImageGrids.
+* Fixed an error that allowed too-large indices in lower-left origin ImageGrids.
+* Allow color assignment from Blocks/Pixels, not just tuples. (Thanks @wolever.)
 
 v 1.5
 =====
