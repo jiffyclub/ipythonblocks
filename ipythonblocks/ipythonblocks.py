@@ -11,7 +11,6 @@ practicing control flow stuctures and quickly seeing the results.
 import copy
 import collections
 import itertools
-import math
 import numbers
 import os
 import sys
