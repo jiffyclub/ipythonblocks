@@ -80,6 +80,19 @@ def embed_colorpicker():
               'width="100%" height="550px"></iframe>')
     display(HTML(iframe))
 
+def color_property(name):
+    real_name = "_"+name
+
+    @property
+    def prop(self):
+        return getattr(self, real_name)
+
+    @prop.setter
+    def prop(self, value):
+        value = Block._check_value(value)
+        setattr(self, real_name, value)
+
+    return prop
 
 class Block(object):
     """
@@ -108,6 +121,10 @@ class Block(object):
 
     """
 
+    red = color_property('red')
+    green = color_property('green')
+    blue = color_property('blue')
+
     def __init__(self, red, green, blue, size=20):
         self.red = red
         self.green = green
@@ -128,33 +145,6 @@ class Block(object):
             raise InvalidColorSpec(s)
 
         return int(round(min(255, max(0, value))))
-
-    @property
-    def red(self):
-        return self._red
-
-    @red.setter
-    def red(self, value):
-        value = self._check_value(value)
-        self._red = value
-
-    @property
-    def green(self):
-        return self._green
-
-    @green.setter
-    def green(self, value):
-        value = self._check_value(value)
-        self._green = value
-
-    @property
-    def blue(self):
-        return self._blue
-
-    @blue.setter
-    def blue(self, value):
-        value = self._check_value(value)
-        self._blue = value
 
     @property
     def rgb(self):
