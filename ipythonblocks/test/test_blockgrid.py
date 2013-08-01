@@ -314,6 +314,7 @@ def test_setitem(basic_grid):
     for block in bg[::3, ::3]:
         assert block.rgb == colors
 
+
 def test_setitem_to_block(basic_grid):
     """
     Test assigning a Block to a BlockGrid.
@@ -323,6 +324,30 @@ def test_setitem_to_block(basic_grid):
     bg[1, 1] = bg[0, 0]
     assert bg[0, 0] == bg[1, 1]
     assert bg[1, 1].rgb == (0, 0, 0)
+
+
+def test_setitem_with_grid(basic_grid):
+    og = basic_grid.copy()
+    og[:] = (4, 5, 6)
+
+    basic_grid[:1, :2] = og[-1:, -2:]
+
+    for b in basic_grid:
+        if b.row < 1 and b.col < 2:
+            assert b.rgb == (4, 5, 6)
+        else:
+            assert b.rgb == (1, 2, 3)
+
+
+def test_setitem_raises(basic_grid):
+    og = basic_grid.copy()
+
+    with pytest.raises(ipythonblocks.ShapeMismatch):
+        basic_grid[:, :] = og[:2, :2]
+
+    with pytest.raises(TypeError):
+        basic_grid[0, 0] = og[:2, :2]
+
 
 def test_to_text(capsys):
     """

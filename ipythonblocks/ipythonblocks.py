@@ -23,8 +23,8 @@ from functools import reduce
 from IPython.display import HTML, display, clear_output
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
-           'InvalidColorSpec', 'show_color', 'embed_colorpicker',
-           'colors', '__version__')
+           'InvalidColorSpec', 'ShapeMismatch', 'show_color',
+           'embed_colorpicker', 'colors', '__version__')
 __version__ = '1.6dev'
 
 _TABLE = ('<style type="text/css">'
@@ -51,6 +51,14 @@ _SMALLEST_BLOCK = 1
 class InvalidColorSpec(Exception):
     """
     Error for a color value that is not a number.
+
+    """
+    pass
+
+
+class ShapeMismatch(Exception):
+    """
+    Error for when a grid assigned to another doesn't have the same shape.
 
     """
     pass
@@ -94,6 +102,22 @@ def _color_property(name):
         setattr(self, real_name, value)
 
     return prop
+
+
+def _flatten(thing, ignore_types=(str,)):
+    """
+    Yield a single item or str/unicode or recursively yield from iterables.
+
+    Adapted from Beazley's Python Cookbook.
+
+    """
+    if isinstance(thing, collections.Iterable) and \
+            not isinstance(thing, ignore_types):
+        for i in thing:
+            for x in _flatten(i):
+                yield x
+    else:
+        yield thing
 
 
 class Block(object):
@@ -224,7 +248,7 @@ class Block(object):
 
     def __eq__(self, other):
         if not isinstance(other, Block):
-            raise NotImplemented
+            return False
         return self.rgb == other.rgb and self.size == other.size
 
     def __str__(self):
@@ -402,23 +426,22 @@ class BlockGrid(object):
             return self._view_from_grid(new_grid)
 
     def __setitem__(self, index, value):
-        ind_cat = self._categorize_index(index)
+        thing = self[index]
 
-        if ind_cat == _SINGLE_ROW:
-            for b in self._grid[index]:
-                b._update(value)
+        if isinstance(value, BlockGrid):
+            if isinstance(thing, BlockGrid):
+                if thing.shape != value.shape:
+                    raise ShapeMismatch('Both sides of grid assignment must '
+                                        'have the same shape.')
 
-        elif ind_cat == _SINGLE_ITEM:
-            self._grid[index[0]][index[1]]._update(value)
+                for a, b in zip(thing, value):
+                    a._update(b)
 
-        else:
-            if ind_cat == _ROW_SLICE:
-                sub_grid = self._grid[index]
+            else:
+                raise TypeError('Cannot assign grid to single block.')
 
-            elif ind_cat == _DOUBLE_SLICE:
-                sub_grid = self._get_double_slice(index)
-
-            for b in itertools.chain(*sub_grid):
+        elif isinstance(value, (collections.Iterable, Block)):
+            for b in _flatten(thing):
                 b._update(value)
 
     def _get_double_slice(self, index):
@@ -695,16 +718,6 @@ class ImageGrid(BlockGrid):
         elif ind_cat == _DOUBLE_SLICE:
             new_grid = self._get_double_slice(index)
             return self._view_from_grid(new_grid)
-
-    def __setitem__(self, index, value):
-        pixels = self[index]
-
-        if isinstance(pixels, Pixel):
-            pixels._update(value)
-
-        else:
-            for p in itertools.chain(*pixels._grid):
-                p._update(value)
 
     def _get_double_slice(self, index):
         cslice, rslice = index
