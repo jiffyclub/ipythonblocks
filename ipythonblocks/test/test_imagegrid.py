@@ -153,9 +153,36 @@ def test_setitem_lower_left_slice(lower_left):
         assert pix.green == 202
         assert pix.blue == 203
 
+
 def test_slice_assignment(lower_left):
     ll = lower_left
 
     ll[1, 1] = (42, 42, 42)
     ll[0, 0] = ll[1, 1]
     assert ll[0, 0].rgb == (42, 42, 42)
+
+
+def test_setitem_with_grid_ul(upper_left):
+    og = upper_left.copy()
+    og[:, :] = (4, 5, 6)
+
+    upper_left[:1, :2] = og[-1:, -2:]
+
+    for b in upper_left:
+        if b.col < 1 and b.row < 2:
+            assert b.rgb == (4, 5, 6)
+        else:
+            assert b.rgb == (7, 8, 9)
+
+
+def test_setitem_with_grid_ll(lower_left):
+    og = lower_left.copy()
+    og[:, :] = (4, 5, 6)
+
+    lower_left[:1, :2] = og[-1:, -2:]
+
+    for b in lower_left:
+        if b.col < 1 and b.row < 2:
+            assert b.rgb == (4, 5, 6)
+        else:
+            assert b.rgb == (7, 8, 9)
