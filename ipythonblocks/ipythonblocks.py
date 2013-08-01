@@ -104,7 +104,7 @@ def _color_property(name):
     return prop
 
 
-def _flatten(thing, ignore_types=(str, unicode)):
+def _flatten(thing, ignore_types=(str,)):
     """
     Yield a single item or str/unicode or recursively yield from iterables.
 
@@ -248,7 +248,7 @@ class Block(object):
 
     def __eq__(self, other):
         if not isinstance(other, Block):
-            raise NotImplemented
+            return False
         return self.rgb == other.rgb and self.size == other.size
 
     def __str__(self):
@@ -434,7 +434,7 @@ class BlockGrid(object):
                     raise ShapeMismatch('Both sides of grid assignment must '
                                         'have the same shape.')
 
-                for a, b in itertools.izip(thing, value):
+                for a, b in zip(thing, value):
                     a._update(b)
 
             else:
