@@ -42,12 +42,21 @@ Dependencies
 
 Required dependencies:
 
-* Python_ (>= 2.6)
+* Python_ >= 2.6
 * IPython_
 
 Optional dependencies:
 
-* pytest_ (>= 2.3, for the test suite, see below)
+* requests_ >= 1.0 (for posting and getting to/from `ipythonblocks.org`_)
+
+Testing dependencies:
+
+* pytest_ >= 2.3, (for the test suite, see below)
+* responses_ >= 0.1
+* mock_ (dependency of responses)
+
+Demo dependencies:
+
 * PIL_ (for ``starry_night_to_text.ipynb``)
 
 
@@ -70,4 +79,8 @@ with::
 .. _ipythonblocks.py: https://github.com/jiffyclub/ipythonblocks/blob/master/ipythonblocks/ipythonblocks.py
 .. _Python: http://python.org/
 .. _pytest: http://pytest.org/
+.. _requests: http://docs.python-requests.org/en/latest/
 .. _PIL: http://www.pythonware.com/products/pil/
+.. _responses: https://github.com/dropbox/responses
+.. _mock: http://www.voidspace.org.uk/python/mock/
+.. _ipythonblocks.org: http://ipythonblocks.org
