@@ -120,6 +120,86 @@ def _flatten(thing, ignore_types=(str,)):
         yield thing
 
 
+def _parse_str_cell_spec(cells, length):
+    """
+    Parse a single string cell specification representing either a single
+    integer or a slice.
+
+    Parameters
+    ----------
+    cells : str
+        E.g. '5' for an int or '5:9' for a slice.
+    length : int
+        The number of items in the user's In history list. Used for
+        normalizing slices.
+
+    Returns
+    -------
+    cell_nos : list of int
+
+    """
+    if ':' not in cells:
+        return _parse_cells_spec(int(cells), length)
+
+    else:
+        return _parse_cells_spec(slice(*[int(x) if x else None
+                                         for x in cells.split(':')]),
+                                 length)
+
+
+def _parse_cells_spec(cells, length):
+    """
+    Used by _get_code_cells to parse a cell specification string into an
+    ordered list of cell numbers.
+
+    Parameters
+    ----------
+    cells : str, int, or slice
+        Specification of which cells to retrieve. Can be a single number,
+        a slice, or a combination of either separated by commas.
+    length : int
+        The number of items in the user's In history list. Used for
+        normalizing slices.
+
+    Returns
+    -------
+    cell_nos : list of int
+        Ordered list of cell numbers derived from spec.
+
+    """
+    if isinstance(cells, int):
+        return [cells]
+
+    elif isinstance(cells, slice):
+        return range(*cells.indices(length))
+
+    else:
+        # string parsing
+        return sorted(set(_flatten(_parse_str_cell_spec(s, length)
+                                   for s in cells.split(','))))
+
+
+def _get_code_cells(cells):
+    """
+    Get the inputs of the specified cells from the notebook.
+
+    Parameters
+    ----------
+    cells : str, int, or slice
+        Specification of which cells to retrieve. Can be a single number,
+        a slice, or a combination of either separated by commas.
+
+    Returns
+    -------
+    code : list of str
+        Contents of cells as strings in chronological order.
+
+    """
+    In = get_ipython().user_ns['In']
+    cells = _parse_cells_spec(cells, len(In))
+    return [In[x] for x in cells]
+
+
 class Block(object):
     """
     A colored square.
