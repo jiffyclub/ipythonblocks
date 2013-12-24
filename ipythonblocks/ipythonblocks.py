@@ -647,6 +647,20 @@ class BlockGrid(object):
         if filename:
             f.close()
 
+    def _to_simple_grid(self):
+        """
+        Make a simple representation of the table: nested lists of
+        of the rows containing tuples of (red, green, blue, size)
+        for each of the blocks.
+
+        Returns
+        -------
+        grid : list of lists
+
+        """
+        return [[(x.red, x.green, x.blue, x.size) for x in row]
+                for row in self._grid]
+
 
 class Pixel(Block):
     @property
