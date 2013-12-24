@@ -7,6 +7,7 @@ import json
 import string
 import sys
 
+import mock
 import pytest
 import responses
 
@@ -125,10 +126,82 @@ class Test_get_code_cells(object):
         assert ipb._get_code_cells('4,3:6') == [A10[x] for x in [3, 4, 5]]
 
 
-@pytest.mark.parametrize('fixture, data',
-    [(block_grid, data_2x2),
-     (image_grid_ll, data_2x2),
-     (image_grid_ul, data_2x2)])
-def test_to_simple_grid(fixture, data):
-    grid = fixture(data())
-    assert grid._to_simple_grid() == data()
+@pytest.mark.parametrize('fixture',
+    [(block_grid), (image_grid_ll), (image_grid_ul)])
+def test_to_simple_grid(fixture, data_2x2):
+    grid = fixture(data_2x2)
+    assert grid._to_simple_grid() == data_2x2
+
+
+@responses.activate
+@mock.patch('sys.version_info', ('python', 'version'))
+@mock.patch.object(ipb, '__version__', 'ipb_version')
+@mock.patch.object(ipb, '_POST_URL', 'http://ipythonblocks.org/post_url')
+def test_BlockGrid_post_to_web():
+    data = data_2x2()
+    grid = block_grid(data)
+
+    expected = {
+        'python_version': tuple(sys.version_info),
+        'ipb_version': ipb.__version__,
+        'ipb_class': 'BlockGrid',
+        'code_cells': None,
+        'secret': False,
+        'table_data': {
+            'lines_on': grid.lines_on,
+            'width': grid.width,
+            'height': grid.height,
+            'blocks': data
+        }
+    }
+    expected = json.dumps(expected)
+
+    responses.add(responses.POST, ipb._POST_URL,
+                  body=json.dumps({'url': 'url'}),
+                  status=200, content_type='application/json')
+
+    url = grid.post_to_web()
+
+    assert url == 'url'
+    assert len(responses.calls) == 1
+
+    req = responses.calls[0].request
+    assert req.url == ipb._POST_URL
+    assert req.body == expected
+
+
+@responses.activate
+@mock.patch('sys.version_info', ('python', 'version'))
+@mock.patch.object(ipb, '__version__', 'ipb_version')
+@mock.patch.object(ipb, '_POST_URL', 'http://ipythonblocks.org/post_url')
+def test_ImageGrid_ul_post_to_web():
+    data = data_2x2()
+    grid = image_grid_ul(data)
+
+    expected = {
+        'python_version': tuple(sys.version_info),
+        'ipb_version': ipb.__version__,
+        'ipb_class': 'ImageGrid',
+        'code_cells': None,
+        'secret': False,
+        'table_data': {
+            'lines_on': grid.lines_on,
+            'width': grid.width,
+            'height': grid.height,
+            'blocks': data
+        }
+    }
+    expected = json.dumps(expected)
+
+    responses.add(responses.POST, ipb._POST_URL,
+                  body=json.dumps({'url': 'url'}),
+                  status=200, content_type='application/json')
+
+    url = grid.post_to_web()
+
+    assert url == 'url'
+    assert len(responses.calls) == 1
+
+    req = responses.calls[0].request
+    assert req.url == ipb._POST_URL
+    assert req.body == expected
