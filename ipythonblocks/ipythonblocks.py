@@ -440,6 +440,13 @@ class BlockGrid(object):
 
         self._lines_on = value
 
+    def __eq__(self, other):
+        if not isinstance(other, BlockGrid):
+            return False
+        else:
+            # compare the underlying grids
+            return self._grid == other._grid
+
     def _view_from_grid(self, grid):
         """
         Make a new grid from a list of lists of Block objects.
