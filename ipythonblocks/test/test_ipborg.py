@@ -242,3 +242,32 @@ def test_BlockGrid_from_web():
 
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == get_url
+
+
+@responses.activate
+@mock.patch.object(ipb, '_GET_URL', 'http://ipythonblocks.org/get_url/{}')
+def test_ImageGrid_ul_from_web():
+    data = data_2x2()
+    grid_id = 'abc'
+    get_url = ipb._GET_URL.format(grid_id)
+    resp = {
+        'lines_on': True,
+        'width': 2,
+        'height': 2,
+        'blocks': data
+    }
+
+    responses.add(responses.GET, get_url, body=json.dumps(resp), status=200,
+                  content_type='application/json')
+
+    origin = 'upper-left'
+    grid = ipb.ImageGrid.from_web(grid_id, origin=origin)
+
+    assert grid.height == resp['height']
+    assert grid.width == resp['width']
+    assert grid.lines_on == resp['lines_on']
+    assert grid._to_simple_grid() == data
+    assert grid.origin == origin
+
+    assert len(responses.calls) == 1
+    assert responses.calls[0].request.url == get_url

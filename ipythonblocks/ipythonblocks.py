@@ -826,7 +826,7 @@ class ImageGrid(BlockGrid):
         Length of the sides of grid blocks in pixels. One is the lower limit.
     lines_on : bool, optional
         Whether or not to display lines between blocks.
-    origin : {'lower-left', 'upper-left'}
+    origin : {'lower-left', 'upper-left'}, optional
         Set the location of the grid origin.
 
     Attributes
@@ -963,6 +963,35 @@ class ImageGrid(BlockGrid):
                        for r in rows))
 
         return _TABLE.format(uuid.uuid4(), int(self._lines_on), html)
+
+    @classmethod
+    def from_web(cls, grid_id, origin='lower-left'):
+        """
+        Make a new ImageGrid from a grid on ipythonblocks.org.
+
+        Parameters
+        ----------
+        grid_id : str
+            ID of a grid on ipythonblocks.org. This will be the part of the
+            URL after 'ipythonblocks.org/'.
+        origin : {'lower-left', 'upper-left'}, optional
+            Set the location of the grid origin.
+
+        Returns
+        -------
+        grid : ImageGrid
+
+        """
+        import requests
+
+        resp = requests.get(_GET_URL.format(grid_id))
+        grid_spec = resp.json()
+
+        grid = cls(grid_spec['width'], grid_spec['height'],
+                   lines_on=grid_spec['lines_on'], origin=origin)
+        grid._load_simple_grid(grid_spec['blocks'])
+
+        return grid
 
 
 # As a convenience, provide the named HTML colors as a dictionary.
