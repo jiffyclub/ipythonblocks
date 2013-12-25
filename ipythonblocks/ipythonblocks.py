@@ -717,6 +717,7 @@ class BlockGrid(object):
         }
 
         response = requests.post(_POST_URL, data=json.dumps(req))
+        response.raise_for_status()
 
         return response.json()['url']
 
@@ -759,6 +760,7 @@ class BlockGrid(object):
         import requests
 
         resp = requests.get(_GET_URL.format(grid_id))
+        resp.raise_for_status()
         grid_spec = resp.json()
 
         grid = cls(grid_spec['width'], grid_spec['height'],
@@ -985,6 +987,7 @@ class ImageGrid(BlockGrid):
         import requests
 
         resp = requests.get(_GET_URL.format(grid_id))
+        resp.raise_for_status()
         grid_spec = resp.json()
 
         grid = cls(grid_spec['width'], grid_spec['height'],
