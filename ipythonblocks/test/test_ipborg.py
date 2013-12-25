@@ -127,10 +127,20 @@ class Test_get_code_cells(object):
 
 
 @pytest.mark.parametrize('fixture',
-    [(block_grid), (image_grid_ll), (image_grid_ul)])
+    [block_grid, image_grid_ll, image_grid_ul])
 def test_to_simple_grid(fixture, data_2x2):
     grid = fixture(data_2x2)
     assert grid._to_simple_grid() == data_2x2
+
+
+@pytest.mark.parametrize('test_grid, ref_grid',
+    [(ipb.BlockGrid(2, 2), block_grid),
+     (ipb.ImageGrid(2, 2, origin='upper-left'), image_grid_ul),
+     (ipb.ImageGrid(2, 2, origin='lower-left'), image_grid_ll)])
+def test_load_simple_grid(test_grid, ref_grid, data_2x2):
+    ref_grid = ref_grid(data_2x2)
+    test_grid._load_simple_grid(data_2x2)
+    assert test_grid == ref_grid
 
 
 @responses.activate
@@ -205,3 +215,30 @@ def test_ImageGrid_ul_post_to_web():
     req = responses.calls[0].request
     assert req.url == ipb._POST_URL
     assert req.body == expected
+
+
+@responses.activate
+@mock.patch.object(ipb, '_GET_URL', 'http://ipythonblocks.org/get_url/{}')
+def test_BlockGrid_from_web():
+    data = data_2x2()
+    grid_id = 'abc'
+    get_url = ipb._GET_URL.format(grid_id)
+    resp = {
+        'lines_on': True,
+        'width': 2,
+        'height': 2,
+        'blocks': data
+    }
+
+    responses.add(responses.GET, get_url, body=json.dumps(resp), status=200,
+                  content_type='application/json')
+
+    grid = ipb.BlockGrid.from_web(grid_id)
+
+    assert grid.height == resp['height']
+    assert grid.width == resp['width']
+    assert grid.lines_on == resp['lines_on']
+    assert grid._to_simple_grid() == data
+
+    assert len(responses.calls) == 1
+    assert responses.calls[0].request.url == get_url

@@ -49,6 +49,7 @@ _DOUBLE_SLICE = 'double slice'
 _SMALLEST_BLOCK = 1
 
 _POST_URL = 'http://ipythonblocks.org/post'
+_GET_URL = 'http://ipythonblocks.org/get/{}'
 
 
 class InvalidColorSpec(Exception):
@@ -666,6 +667,9 @@ class BlockGrid(object):
         Returns
         -------
         grid : list of lists
+            No matter the class this method is called on the returned
+            grid will be Python-style: row oriented with the top-left
+            block in the [0][0] position.
 
         """
         return [[(x.red, x.green, x.blue, x.size) for x in row]
@@ -715,6 +719,53 @@ class BlockGrid(object):
         response = requests.post(_POST_URL, data=json.dumps(req))
 
         return response.json()['url']
+
+    def _load_simple_grid(self, block_data):
+        """
+        Modify the grid to reflect the data in `block_data`, which
+        should be a nested list of tuples as produced by `_to_simple_grid`.
+
+        Parameters
+        ----------
+        block_data : list of lists
+            Nested list of tuples as produced by `_to_simple_grid`.
+
+        """
+        if len(block_data) != self.height or \
+                len(block_data[0]) != self.width:
+            raise ShapeMismatch('block_data must have same shape as grid.')
+
+        for row in range(self.height):
+            for col in range(self.width):
+                self._grid[row][col].rgb = block_data[row][col][:3]
+                self._grid[row][col].size = block_data[row][col][3]
+
+    @classmethod
+    def from_web(cls, grid_id):
+        """
+        Make a new BlockGrid from a grid on ipythonblocks.org.
+
+        Parameters
+        ----------
+        grid_id : str
+            ID of a grid on ipythonblocks.org. This will be the part of the
+            URL after 'ipythonblocks.org/'.
+
+        Returns
+        -------
+        grid : BlockGrid
+
+        """
+        import requests
+
+        resp = requests.get(_GET_URL.format(grid_id))
+        grid_spec = resp.json()
+
+        grid = cls(grid_spec['width'], grid_spec['height'],
+                   lines_on=grid_spec['lines_on'])
+        grid._load_simple_grid(grid_spec['blocks'])
+
+        return grid
 
 
 class Pixel(Block):
