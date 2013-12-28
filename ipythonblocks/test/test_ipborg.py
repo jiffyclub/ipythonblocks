@@ -157,7 +157,7 @@ def test_BlockGrid_post_to_web():
         'ipb_class': 'BlockGrid',
         'code_cells': None,
         'secret': False,
-        'table_data': {
+        'grid_data': {
             'lines_on': grid.lines_on,
             'width': grid.width,
             'height': grid.height,
@@ -194,7 +194,7 @@ def test_ImageGrid_ul_post_to_web():
         'ipb_class': 'ImageGrid',
         'code_cells': None,
         'secret': False,
-        'table_data': {
+        'grid_data': {
             'lines_on': grid.lines_on,
             'width': grid.width,
             'height': grid.height,

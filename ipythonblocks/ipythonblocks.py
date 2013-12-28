@@ -708,7 +708,7 @@ class BlockGrid(object):
             'ipb_class': self.__class__.__name__,
             'code_cells': code_cells,
             'secret': secret,
-            'table_data': {
+            'grid_data': {
                 'lines_on': self.lines_on,
                 'width': self.width,
                 'height': self.height,
