@@ -675,6 +675,46 @@ class BlockGrid(object):
         return [[(x.red, x.green, x.blue, x.size) for x in row]
                 for row in self._grid]
 
+    def _construct_post_request(self, code_cells, secret):
+        """
+        Construct the request dictionary that will be posted
+        to ipythonblocks.org.
+
+        Parameters
+        ----------
+        code_cells : int, str, slice, or None
+            Specify any code cells to be sent and displayed with the grid.
+            You can specify a single cell, a Python, slice, or a combination
+            as a string separated by commas.
+
+            For example, '3,5,8:10' would send cells 3, 5, 8, and 9.
+        secret : bool
+            If True, this grid will not be shown randomly on ipythonblocks.org.
+
+        Returns
+        -------
+        request : dict
+
+        """
+        if code_cells is not None:
+            code_cells = _get_code_cells(code_cells)
+
+        req = {
+            'python_version': tuple(sys.version_info),
+            'ipb_version': __version__,
+            'ipb_class': self.__class__.__name__,
+            'code_cells': code_cells,
+            'secret': secret,
+            'grid_data': {
+                'lines_on': self.lines_on,
+                'width': self.width,
+                'height': self.height,
+                'blocks': self._to_simple_grid()
+            }
+        }
+
+        return req
+
     def post_to_web(self, code_cells=None, secret=False):
         """
         Post this grid to ipythonblocks.org and return a URL to
@@ -699,23 +739,7 @@ class BlockGrid(object):
         """
         import requests
 
-        if code_cells is not None:
-            code_cells = _get_code_cells(code_cells)
-
-        req = {
-            'python_version': tuple(sys.version_info),
-            'ipb_version': __version__,
-            'ipb_class': self.__class__.__name__,
-            'code_cells': code_cells,
-            'secret': secret,
-            'grid_data': {
-                'lines_on': self.lines_on,
-                'width': self.width,
-                'height': self.height,
-                'blocks': self._to_simple_grid()
-            }
-        }
-
+        req = self._construct_post_request(code_cells, secret)
         response = requests.post(_POST_URL, data=json.dumps(req))
         response.raise_for_status()
 
