@@ -218,11 +218,11 @@ def test_ImageGrid_ul_post_to_web():
 
 
 @responses.activate
-@mock.patch.object(ipb, '_GET_URL', 'http://ipythonblocks.org/get_url/{}')
+@mock.patch.object(ipb, '_GET_URL_PUBLIC', 'http://ipythonblocks.org/get_url/{}')
 def test_BlockGrid_from_web():
     data = data_2x2()
     grid_id = 'abc'
-    get_url = ipb._GET_URL.format(grid_id)
+    get_url = ipb._GET_URL_PUBLIC.format(grid_id)
     resp = {
         'lines_on': True,
         'width': 2,
@@ -245,11 +245,11 @@ def test_BlockGrid_from_web():
 
 
 @responses.activate
-@mock.patch.object(ipb, '_GET_URL', 'http://ipythonblocks.org/get_url/{}')
+@mock.patch.object(ipb, '_GET_URL_SECRET', 'http://ipythonblocks.org/get_url/{}')
 def test_ImageGrid_ul_from_web():
     data = data_2x2()
     grid_id = 'abc'
-    get_url = ipb._GET_URL.format(grid_id)
+    get_url = ipb._GET_URL_SECRET.format(grid_id)
     resp = {
         'lines_on': True,
         'width': 2,
@@ -261,7 +261,7 @@ def test_ImageGrid_ul_from_web():
                   content_type='application/json')
 
     origin = 'upper-left'
-    grid = ipb.ImageGrid.from_web(grid_id, origin=origin)
+    grid = ipb.ImageGrid.from_web(grid_id, secret=True, origin=origin)
 
     assert grid.height == resp['height']
     assert grid.width == resp['width']

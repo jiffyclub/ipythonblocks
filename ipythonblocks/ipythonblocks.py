@@ -49,7 +49,8 @@ _DOUBLE_SLICE = 'double slice'
 _SMALLEST_BLOCK = 1
 
 _POST_URL = 'http://ipythonblocks.org/post'
-_GET_URL = 'http://ipythonblocks.org/get/{}'
+_GET_URL_PUBLIC = 'http://ipythonblocks.org/get/{}'
+_GET_URL_SECRET = 'http://ipythonblocks.org/get/secret/{}'
 
 
 class InvalidColorSpec(Exception):
@@ -766,7 +767,7 @@ class BlockGrid(object):
                 self._grid[row][col].size = block_data[row][col][3]
 
     @classmethod
-    def from_web(cls, grid_id):
+    def from_web(cls, grid_id, secret=False):
         """
         Make a new BlockGrid from a grid on ipythonblocks.org.
 
@@ -775,6 +776,8 @@ class BlockGrid(object):
         grid_id : str
             ID of a grid on ipythonblocks.org. This will be the part of the
             URL after 'ipythonblocks.org/'.
+        secret : bool, optional
+            Whether or not the grid on ipythonblocks.org is secret.
 
         Returns
         -------
@@ -783,7 +786,8 @@ class BlockGrid(object):
         """
         import requests
 
-        resp = requests.get(_GET_URL.format(grid_id))
+        get_url = _GET_URL_PUBLIC if not secret else _GET_URL_SECRET
+        resp = requests.get(get_url.format(grid_id))
         resp.raise_for_status()
         grid_spec = resp.json()
 
@@ -991,7 +995,7 @@ class ImageGrid(BlockGrid):
         return _TABLE.format(uuid.uuid4(), int(self._lines_on), html)
 
     @classmethod
-    def from_web(cls, grid_id, origin='lower-left'):
+    def from_web(cls, grid_id, secret=False, origin='lower-left'):
         """
         Make a new ImageGrid from a grid on ipythonblocks.org.
 
@@ -1000,6 +1004,8 @@ class ImageGrid(BlockGrid):
         grid_id : str
             ID of a grid on ipythonblocks.org. This will be the part of the
             URL after 'ipythonblocks.org/'.
+        secret : bool, optional
+            Whether or not the grid on ipythonblocks.org is secret.
         origin : {'lower-left', 'upper-left'}, optional
             Set the location of the grid origin.
 
@@ -1010,7 +1016,8 @@ class ImageGrid(BlockGrid):
         """
         import requests
 
-        resp = requests.get(_GET_URL.format(grid_id))
+        get_url = _GET_URL_PUBLIC if not secret else _GET_URL_SECRET
+        resp = requests.get(get_url.format(grid_id))
         resp.raise_for_status()
         grid_spec = resp.json()
 
