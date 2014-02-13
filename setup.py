@@ -8,7 +8,7 @@ with open('README.rst') as f:
   long_description=f.read()
 
 setup(name='ipythonblocks',
-      version='1.6.0',
+      version='1.7dev',
       description='Practice Python with colored grids in the IPython Notebook',
       long_description=long_description,
       author='Matt Davis',
