@@ -1,6 +1,8 @@
 v 1.6
 =====
 
+* Added ``post_to_web`` and ``from_web`` methods for for communication
+  with ipythonblocks.org.
 * Added a ``display_time`` keyword to the ``flash()`` method.
 * Changed the ``animate`` property to a method so that it can take
   a ``stop_time`` keyword to control the amount of time between loop steps.
