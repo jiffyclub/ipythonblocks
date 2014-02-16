@@ -1028,8 +1028,20 @@ class ImageGrid(BlockGrid):
         return grid
 
 
-# As a convenience, provide the named HTML colors as a dictionary.
-colors = {
+# As a convenience, provide some colors as a custom hybrid
+# dictionary and object with the color names as attributes
+class _ColorBunch(dict):
+    """
+    Customized dictionary that exposes its keys as attributes.
+
+    """
+    def __init__(self, colors):
+        super(_ColorBunch, self).__init__(colors)
+        self.__dict__.update(colors)
+
+
+# HTML colors
+colors = _ColorBunch({
     'AliceBlue': (240, 248, 255),
     'AntiqueWhite': (250, 235, 215),
     'Aqua': (0, 255, 255),
@@ -1170,9 +1182,11 @@ colors = {
     'WhiteSmoke': (245, 245, 245),
     'Yellow': (255, 255, 0),
     'YellowGreen': (154, 205, 50)
-}
+})
 
-fui_colors = {
+
+# Flat UI colors: http://flatuicolors.com/
+fui_colors = _ColorBunch({
     'Alizarin': (231, 76, 60),
     'Pomegranate': (192, 57, 43),
     'Carrot': (230, 126, 34),
@@ -1193,4 +1207,4 @@ fui_colors = {
     'Asbestos': (127, 140, 141),
     'Clouds': (236, 240, 241),
     'Silver': (189, 195, 199)
-}
+})
