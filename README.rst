@@ -1,6 +1,18 @@
 ``ipythonblocks``
 =================
 
+.. image:: https://travis-ci.org/jiffyclub/ipythonblocks.png?branch=master
+   :alt: Travis-CI
+   :target: https://travis-ci.org/jiffyclub/ipythonblocks
+
+.. image:: https://coveralls.io/repos/jiffyclub/ipythonblocks/badge.png
+   :alt: Coveralls
+   :target: https://coveralls.io/r/jiffyclub/ipythonblocks
+
+.. image:: https://pypip.in/v/ipythonblocks/badge.png
+   :alt: PyPI
+   :target: https://pypi.python.org/pypi/ipythonblocks
+
 ``ipythonblocks`` is a teaching tool for use with the IPython_ Notebook.
 It provides a ``BlockGrid`` object whose representation is an HTML table.
 Individual table cells are represented by ``Block`` objects that have ``.red``,
