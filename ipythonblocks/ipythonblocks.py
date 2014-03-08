@@ -10,7 +10,6 @@ practicing control flow stuctures and quickly seeing the results.
 
 import copy
 import collections
-import itertools
 import json
 import numbers
 import os
@@ -49,8 +48,8 @@ _DOUBLE_SLICE = 'double slice'
 _SMALLEST_BLOCK = 1
 
 _POST_URL = 'http://ipythonblocks.org/post'
-_GET_URL_PUBLIC = 'http://ipythonblocks.org/get/{}'
-_GET_URL_SECRET = 'http://ipythonblocks.org/get/secret/{}'
+_GET_URL_PUBLIC = 'http://ipythonblocks.org/get/{0}'
+_GET_URL_SECRET = 'http://ipythonblocks.org/get/secret/{0}'
 
 
 class InvalidColorSpec(Exception):

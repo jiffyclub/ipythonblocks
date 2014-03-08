@@ -218,7 +218,7 @@ def test_ImageGrid_ul_post_to_web():
 
 
 @responses.activate
-@mock.patch.object(ipb, '_GET_URL_PUBLIC', 'http://ipythonblocks.org/get_url/{}')
+@mock.patch.object(ipb, '_GET_URL_PUBLIC', 'http://ipythonblocks.org/get_url/{0}')
 def test_BlockGrid_from_web():
     data = data_2x2()
     grid_id = 'abc'
@@ -245,7 +245,7 @@ def test_BlockGrid_from_web():
 
 
 @responses.activate
-@mock.patch.object(ipb, '_GET_URL_SECRET', 'http://ipythonblocks.org/get_url/{}')
+@mock.patch.object(ipb, '_GET_URL_SECRET', 'http://ipythonblocks.org/get_url/{0}')
 def test_ImageGrid_ul_from_web():
     data = data_2x2()
     grid_id = 'abc'
