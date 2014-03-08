@@ -13,7 +13,7 @@ import responses
 
 from .. import ipythonblocks as ipb
 
-A10 = [a for a in string.lowercase[:10]]
+A10 = [a for a in string.ascii_lowercase[:10]]
 
 
 def setup_module(module):
