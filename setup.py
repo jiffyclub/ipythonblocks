@@ -5,10 +5,10 @@ use_setuptools()
 from setuptools import setup, find_packages
 
 with open('README.rst') as f:
-  long_description=f.read()
+    long_description = f.read()
 
 setup(name='ipythonblocks',
-      version='1.7dev',
+      version='1.6.1',
       description='Practice Python with colored grids in the IPython Notebook',
       long_description=long_description,
       author='Matt Davis',

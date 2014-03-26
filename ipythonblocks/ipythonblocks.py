@@ -25,7 +25,7 @@ from IPython.display import HTML, display, clear_output
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', 'ShapeMismatch', 'show_color',
            'embed_colorpicker', 'colors', 'fui_colors', '__version__')
-__version__ = '1.7dev'
+__version__ = '1.6.1'
 
 _TABLE = ('<style type="text/css">'
           'table.blockgrid {{border: none;}}'
