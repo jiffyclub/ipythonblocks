@@ -167,7 +167,7 @@ def test_BlockGrid_post_to_web():
     expected = json.dumps(expected)
 
     responses.add(responses.POST, ipb._POST_URL,
-                  body=json.dumps({'url': 'url'}),
+                  body=json.dumps({'url': 'url'}).encode('utf-8'),
                   status=200, content_type='application/json')
 
     url = grid.post_to_web()
@@ -204,7 +204,7 @@ def test_ImageGrid_ul_post_to_web():
     expected = json.dumps(expected)
 
     responses.add(responses.POST, ipb._POST_URL,
-                  body=json.dumps({'url': 'url'}),
+                  body=json.dumps({'url': 'url'}).encode('utf-8'),
                   status=200, content_type='application/json')
 
     url = grid.post_to_web()
@@ -230,7 +230,8 @@ def test_BlockGrid_from_web():
         'blocks': data
     }
 
-    responses.add(responses.GET, get_url, body=json.dumps(resp), status=200,
+    responses.add(responses.GET, get_url,
+                  body=json.dumps(resp).encode('utf-8'), status=200,
                   content_type='application/json')
 
     grid = ipb.BlockGrid.from_web(grid_id)
@@ -257,7 +258,8 @@ def test_ImageGrid_ul_from_web():
         'blocks': data
     }
 
-    responses.add(responses.GET, get_url, body=json.dumps(resp), status=200,
+    responses.add(responses.GET, get_url,
+                  body=json.dumps(resp).encode('utf-8'), status=200,
                   content_type='application/json')
 
     origin = 'upper-left'
