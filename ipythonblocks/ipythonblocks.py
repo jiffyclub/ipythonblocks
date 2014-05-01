@@ -175,7 +175,7 @@ def _parse_cells_spec(cells, length):
         return [cells]
 
     elif isinstance(cells, slice):
-        return range(*cells.indices(length))
+        return list(range(*cells.indices(length)))
 
     else:
         # string parsing
