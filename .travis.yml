@@ -7,7 +7,7 @@ before_install:
     - sudo apt-get update
 install:
     - easy_install -U setuptools
-    - pip install ipython>=0.13
+    - pip install ipython==1.2.1
     - pip install .
     - pip install -r test_requirements.txt
     - pip install pytest-cov
