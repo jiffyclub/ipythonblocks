@@ -22,7 +22,6 @@ def test_flatten():
         assert x == i
 
 
-
 def test_flash_should_clear_first(monkeypatch):
     calls = []
     monkeypatch.setattr(ipythonblocks, "clear_output", lambda: calls.append("clear_output"))
@@ -33,16 +32,3 @@ def test_flash_should_clear_first(monkeypatch):
     assert calls[0] == "clear_output"
     assert calls[1] == "show"
     assert calls[2] == "sleep(3)"
-
-
-import os.path
-from os.path import expanduser
-def getssh(): # pseudo application code
-        return os.path.join(expanduser("~admin"), '.ssh')
-
-def test_mytest(monkeypatch):
-            def mockreturn(path):
-                        return '/abc'
-            monkeypatch.setattr(__name__+'.expanduser', mockreturn)
-            x = getssh()
-            assert x == '/abc/.ssh'
