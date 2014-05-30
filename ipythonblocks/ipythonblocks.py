@@ -21,6 +21,7 @@ from operator import iadd
 from functools import reduce
 
 from IPython.display import HTML, display, clear_output
+from IPython.display import Image as ipyImage
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', 'ShapeMismatch', 'show_color',
@@ -625,6 +626,94 @@ class BlockGrid(object):
         self.show()
         time.sleep(display_time)
         clear_output()
+
+    def _calc_image_size(self):
+        """
+        Calculate the size, in pixels, of the grid as an image.
+
+        Returns
+        -------
+        px_width : int
+        px_height : int
+
+        """
+        px_width = self._block_size * self._width
+        px_height = self._block_size * self._height
+
+        if self._lines_on:
+            px_width += self._width + 1
+            px_height += self._height + 1
+
+        return px_width, px_height
+
+    def _write_image(self, fp, format='png'):
+        """
+        Write an image of the current grid to a file-object.
+
+        Parameters
+        ----------
+        fp : file-like
+            A file-like object such as an open file pointer or
+            a StringIO/BytesIO instance.
+        format : str, optional
+            An image format that will be understood by PIL,
+            e.g. 'png', 'jpg', 'gif', etc.
+
+        """
+        try:
+            # PIL
+            import Image
+            import ImageDraw
+        except ImportError:
+            # pillow
+            from PIL import Image, ImageDraw
+
+        im = Image.new(
+            mode='RGB', size=self._calc_image_size(), color=(255, 255, 255))
+        draw = ImageDraw.Draw(im)
+
+        _bs = self._block_size
+
+        for r in range(self._height):
+            for c in range(self._width):
+                px_r = r * _bs
+                px_c = c * _bs
+                if self._lines_on:
+                    px_r += r + 1
+                    px_c += c + 1
+
+                rect = ((px_c, px_r), (px_c + _bs - 1, px_r + _bs - 1))
+                draw.rectangle(rect, fill=self._grid[r][c].rgb)
+
+        im.save(fp, format=format)
+
+    def show_image(self):
+        """
+        Embed grid in the notebook as a PNG image.
+
+        """
+        if sys.version_info[0] == 2:
+            from StringIO import StringIO as BytesIO
+        elif sys.version_info[0] == 3:
+            from io import BytesIO
+
+        im = BytesIO()
+        self._write_image(im)
+        display(ipyImage(data=im.getvalue(), format='png'))
+
+    def save_image(self, filename):
+        """
+        Save an image representation of the grid to a file.
+        Image format will be inferred from file extension.
+
+        Parameters
+        ----------
+        filename : str
+            Name of file to save to.
+
+        """
+        with open(filename, 'wb') as f:
+            self._write_image(f, format=filename.split('.')[-1])
 
     def to_text(self, filename=None):
         """
