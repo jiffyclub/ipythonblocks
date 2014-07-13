@@ -1,3 +1,9 @@
+v 1.7
+=====
+
+* Added ``show_image`` and ``save_image`` for embedding an image in the
+  Notebook and saving an image to a file, respectively.
+
 v 1.6
 =====
 
