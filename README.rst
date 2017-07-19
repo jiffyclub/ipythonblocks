@@ -55,7 +55,7 @@ Dependencies
 
 Required dependencies:
 
-* Python_ >= 2.6
+* Python_ >= 2.7
 * IPython_
 
 Optional dependencies:
