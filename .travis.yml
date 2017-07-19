@@ -1,10 +1,11 @@
+sudo: false
 language: python
 python:
     - "2.7"
     - "3.3"
     - "3.4"
-before_install:
-    - sudo apt-get update
+    - "3.5"
+    - "3.6"
 install:
     - easy_install -U setuptools
     - pip install ipython==1.2.1
