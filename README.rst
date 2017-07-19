@@ -42,10 +42,6 @@ Install
 
     pip install ipythonblocks
 
-or ``easy_install``::
-
-    easy_install ipythonblocks
-
 However, the package is contained in a single ``.py`` file and if you prefer
 you can just grab `ipythonblocks.py`_ and copy it to wherever you
 want to use it (useful for packaging with other teaching materials).
@@ -55,12 +51,13 @@ Dependencies
 
 Required dependencies:
 
-* Python_ >= 2.6
+* Python_ >= 2.7
 * IPython_
 
 Optional dependencies:
 
 * requests_ >= 1.0 (for posting and getting to/from `ipythonblocks.org`_)
+* Pillow_ (for creating images)
 
 Testing dependencies:
 
@@ -95,6 +92,7 @@ with::
 .. _pytest: http://pytest.org/
 .. _requests: http://docs.python-requests.org/en/latest/
 .. _PIL: http://www.pythonware.com/products/pil/
+.. _Pillow: https://python-pillow.org/
 .. _responses: https://github.com/dropbox/responses
 .. _mock: http://www.voidspace.org.uk/python/mock/
-.. _ipythonblocks.org: http://ipythonblocks.org
+.. _ipythonblocks.org: http://www.ipythonblocks.org
