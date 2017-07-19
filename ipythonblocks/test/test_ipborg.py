@@ -146,7 +146,7 @@ def test_load_simple_grid(test_grid, ref_grid, data_2x2):
 @responses.activate
 @mock.patch('sys.version_info', ('python', 'version'))
 @mock.patch.object(ipb, '__version__', 'ipb_version')
-@mock.patch.object(ipb, '_POST_URL', 'http://ipythonblocks.org/post_url')
+@mock.patch.object(ipb, '_POST_URL', 'http://www.ipythonblocks.org/post_url')
 def test_BlockGrid_post_to_web():
     data = data_2x2()
     grid = block_grid(data)
@@ -183,7 +183,7 @@ def test_BlockGrid_post_to_web():
 @responses.activate
 @mock.patch('sys.version_info', ('python', 'version'))
 @mock.patch.object(ipb, '__version__', 'ipb_version')
-@mock.patch.object(ipb, '_POST_URL', 'http://ipythonblocks.org/post_url')
+@mock.patch.object(ipb, '_POST_URL', 'http://www.ipythonblocks.org/post_url')
 def test_ImageGrid_ul_post_to_web():
     data = data_2x2()
     grid = image_grid_ul(data)
@@ -218,7 +218,7 @@ def test_ImageGrid_ul_post_to_web():
 
 
 @responses.activate
-@mock.patch.object(ipb, '_GET_URL_PUBLIC', 'http://ipythonblocks.org/get_url/{0}')
+@mock.patch.object(ipb, '_GET_URL_PUBLIC', 'http://www.ipythonblocks.org/get_url/{0}')
 def test_BlockGrid_from_web():
     data = data_2x2()
     grid_id = 'abc'
@@ -246,7 +246,7 @@ def test_BlockGrid_from_web():
 
 
 @responses.activate
-@mock.patch.object(ipb, '_GET_URL_SECRET', 'http://ipythonblocks.org/get_url/{0}')
+@mock.patch.object(ipb, '_GET_URL_SECRET', 'http://www.ipythonblocks.org/get_url/{0}')
 def test_ImageGrid_ul_from_web():
     data = data_2x2()
     grid_id = 'abc'
