@@ -9,7 +9,7 @@
    :alt: Coveralls
    :target: https://coveralls.io/r/jiffyclub/ipythonblocks
 
-.. image:: https://pypip.in/v/ipythonblocks/badge.png
+.. image:: https://img.shields.io/pypi/v/ipythonblocks.svg
    :alt: PyPI
    :target: https://pypi.python.org/pypi/ipythonblocks
 
