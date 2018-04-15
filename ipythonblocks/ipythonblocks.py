@@ -623,9 +623,9 @@ class BlockGrid(object):
             Amount of time, in seconds, to display the grid.
 
         """
+        clear_output()
         self.show()
         time.sleep(display_time)
-        clear_output()
 
     def _calc_image_size(self):
         """
