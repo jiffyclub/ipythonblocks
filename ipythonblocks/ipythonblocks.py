@@ -26,7 +26,7 @@ from IPython.display import Image as ipyImage
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', 'ShapeMismatch', 'show_color',
            'embed_colorpicker', 'clear', 'colors', 'fui_colors', '__version__')
-__version__ = '1.8dev'
+__version__ = '1.8.0'
 
 _TABLE = ('<style type="text/css">'
           'table.blockgrid {{border: none;}}'
