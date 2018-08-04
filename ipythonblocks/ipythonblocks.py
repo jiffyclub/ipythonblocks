@@ -25,7 +25,7 @@ from IPython.display import Image as ipyImage
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
            'InvalidColorSpec', 'ShapeMismatch', 'show_color',
-           'embed_colorpicker', 'colors', 'fui_colors', '__version__')
+           'embed_colorpicker', 'clear', 'colors', 'fui_colors', '__version__')
 __version__ = '1.8dev'
 
 _TABLE = ('<style type="text/css">'
@@ -67,6 +67,16 @@ class ShapeMismatch(Exception):
 
     """
     pass
+
+
+def clear():
+    """
+    Clear the output of the current cell.
+
+    This is a thin wrapper around IPython.display.clear_output.
+
+    """
+    clear_output()
 
 
 def show_color(red, green, blue):
@@ -576,7 +586,7 @@ class BlockGrid(object):
             self.show()
             time.sleep(stop_time)
             yield block
-            clear_output()
+            clear_output(wait=True)
         self.show()
 
     def _repr_html_(self):
@@ -617,6 +627,10 @@ class BlockGrid(object):
 
         Useful for making an animation or iteratively displaying changes.
 
+        Note that this will leave the grid in place until something replaces
+        it in the same cell. You can use the ``clear`` function to
+        manually clear output.
+
         Parameters
         ----------
         display_time : float
@@ -625,7 +639,7 @@ class BlockGrid(object):
         """
         self.show()
         time.sleep(display_time)
-        clear_output()
+        clear_output(wait=True)
 
     def _calc_image_size(self):
         """
