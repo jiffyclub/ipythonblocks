@@ -576,7 +576,7 @@ class BlockGrid(object):
             self.show()
             time.sleep(stop_time)
             yield block
-            clear_output()
+            clear_output(wait=True)
         self.show()
 
     def _repr_html_(self):
@@ -625,7 +625,7 @@ class BlockGrid(object):
         """
         self.show()
         time.sleep(display_time)
-        clear_output()
+        clear_output(wait=True)
 
     def _calc_image_size(self):
         """
