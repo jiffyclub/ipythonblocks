@@ -22,4 +22,8 @@ setup(name='ipythonblocks',
                    'Programming Language :: Python :: 3',
                    'Intended Audience :: Education',
                    'Topic :: Education'],
-      install_requires=['requests>=1.0'])
+      install_requires=[
+            'ipython>=4.0',
+            'notebook>=4.0',
+            'requests>=1.0',
+      ])
