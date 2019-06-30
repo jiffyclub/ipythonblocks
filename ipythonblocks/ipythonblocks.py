@@ -17,6 +17,7 @@ import sys
 import time
 import uuid
 
+from collections import namedtuple
 from operator import iadd
 from functools import reduce
 
@@ -1130,6 +1131,15 @@ class ImageGrid(BlockGrid):
         return grid
 
 
+# Convenience wrapper for color tuples with attribute access for the
+# component colors
+Color = namedtuple('Color', ['red', 'green', 'blue'])
+Color.__doc__ += """\
+Wrapper for a color tuple that provides .red, .green, and .blue
+attributes for access to the individual components.
+"""
+
+
 # As a convenience, provide some colors as a custom hybrid
 # dictionary and object with the color names as attributes
 class _ColorBunch(dict):
@@ -1138,6 +1148,7 @@ class _ColorBunch(dict):
 
     """
     def __init__(self, colors):
+        colors = {name: Color(*rgb) for name, rgb in colors.items()}
         super(_ColorBunch, self).__init__(colors)
         self.__dict__.update(colors)
 
