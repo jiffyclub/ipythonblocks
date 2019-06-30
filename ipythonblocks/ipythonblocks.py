@@ -20,7 +20,7 @@ import uuid
 from operator import iadd
 from functools import reduce
 
-from IPython.display import HTML, display, clear_output
+from IPython.display import HTML, IFrame, display, clear_output
 from IPython.display import Image as ipyImage
 
 __all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
@@ -99,9 +99,9 @@ def embed_colorpicker():
     Embed the web page www.colorpicker.com inside the IPython Notebook.
 
     """
-    iframe = ('<iframe src="http://www.colorpicker.com/" '
-              'width="100%" height="550px"></iframe>')
-    display(HTML(iframe))
+    display(
+        IFrame(src='http://www.colorpicker.com/', height='550px', width='100%')
+    )
 
 
 def _color_property(name):
