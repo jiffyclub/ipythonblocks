@@ -1160,10 +1160,12 @@ class ImageGrid(BlockGrid):
 # Convenience wrapper for color tuples with attribute access for the
 # component colors
 Color = namedtuple('Color', ['red', 'green', 'blue'])
-Color.__doc__ += """\
-Wrapper for a color tuple that provides .red, .green, and .blue
-attributes for access to the individual components.
-"""
+
+# This doesn't work on Python 2
+# Color.__doc__ += """\
+# Wrapper for a color tuple that provides .red, .green, and .blue
+# attributes for access to the individual components.
+# """
 
 
 # As a convenience, provide some colors as a custom hybrid
