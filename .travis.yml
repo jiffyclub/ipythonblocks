@@ -7,7 +7,7 @@ python:
     - "3.6"
 install:
     - easy_install -U setuptools
-    - pip install ipython==1.2.1
+    - pip install "ipython<6.0"
     - pip install .
     - pip install -r test_requirements.txt
     - pip install pytest-cov
