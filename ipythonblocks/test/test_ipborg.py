@@ -38,7 +38,6 @@ def data_2x2():
             [(9, 10, 11, 12), (13, 14, 15, 16)]]
 
 
-@pytest.fixture
 def block_grid(data_2x2):
     bg = ipb.BlockGrid(2, 2)
     bg[0, 0].rgb = data_2x2[0][0][:3]
@@ -52,7 +51,11 @@ def block_grid(data_2x2):
     return bg
 
 
-@pytest.fixture
+@pytest.fixture(name='block_grid')
+def block_grid_fixture(data_2x2):
+    return block_grid(data_2x2)
+
+
 def image_grid_ll(data_2x2):
     ig = ipb.ImageGrid(2, 2, origin='lower-left')
     ig[0, 0].rgb = data_2x2[1][0][:3]
@@ -66,7 +69,11 @@ def image_grid_ll(data_2x2):
     return ig
 
 
-@pytest.fixture
+@pytest.fixture(name='image_grid_ll')
+def image_grid_ll_fixture(data_2x2):
+    return image_grid_ll(data_2x2)
+
+
 def image_grid_ul(data_2x2):
     ig = ipb.ImageGrid(2, 2, origin='upper-left')
     ig[0, 0].rgb = data_2x2[0][0][:3]
@@ -78,6 +85,11 @@ def image_grid_ul(data_2x2):
     ig[1, 1].rgb = data_2x2[1][1][:3]
     ig[1, 1].size = data_2x2[1][1][3]
     return ig
+
+
+@pytest.fixture(name='image_grid_ul')
+def image_grid_ul_fixture(data_2x2):
+    return image_grid_ul(data_2x2)
 
 
 class Test_parse_cells_spec(object):
@@ -126,17 +138,21 @@ class Test_get_code_cells(object):
         assert ipb._get_code_cells('4,3:6') == [A10[x] for x in [3, 4, 5]]
 
 
-@pytest.mark.parametrize('fixture',
-    [block_grid, image_grid_ll, image_grid_ul])
+@pytest.mark.parametrize(
+    'fixture',
+    [block_grid, image_grid_ll, image_grid_ul]
+)
 def test_to_simple_grid(fixture, data_2x2):
     grid = fixture(data_2x2)
     assert grid._to_simple_grid() == data_2x2
 
 
-@pytest.mark.parametrize('test_grid, ref_grid',
+@pytest.mark.parametrize(
+    'test_grid, ref_grid',
     [(ipb.BlockGrid(2, 2), block_grid),
      (ipb.ImageGrid(2, 2, origin='upper-left'), image_grid_ul),
-     (ipb.ImageGrid(2, 2, origin='lower-left'), image_grid_ll)])
+     (ipb.ImageGrid(2, 2, origin='lower-left'), image_grid_ll)]
+)
 def test_load_simple_grid(test_grid, ref_grid, data_2x2):
     ref_grid = ref_grid(data_2x2)
     test_grid._load_simple_grid(data_2x2)
@@ -147,10 +163,7 @@ def test_load_simple_grid(test_grid, ref_grid, data_2x2):
 @mock.patch('sys.version_info', ('python', 'version'))
 @mock.patch.object(ipb, '__version__', 'ipb_version')
 @mock.patch.object(ipb, '_POST_URL', 'http://www.ipythonblocks.org/post_url')
-def test_BlockGrid_post_to_web():
-    data = data_2x2()
-    grid = block_grid(data)
-
+def test_BlockGrid_post_to_web(data_2x2, block_grid):
     expected = {
         'python_version': tuple(sys.version_info),
         'ipb_version': ipb.__version__,
@@ -158,10 +171,10 @@ def test_BlockGrid_post_to_web():
         'code_cells': None,
         'secret': False,
         'grid_data': {
-            'lines_on': grid.lines_on,
-            'width': grid.width,
-            'height': grid.height,
-            'blocks': data
+            'lines_on': block_grid.lines_on,
+            'width': block_grid.width,
+            'height': block_grid.height,
+            'blocks': data_2x2
         }
     }
     expected = json.dumps(expected)
@@ -170,7 +183,7 @@ def test_BlockGrid_post_to_web():
                   body=json.dumps({'url': 'url'}).encode('utf-8'),
                   status=200, content_type='application/json')
 
-    url = grid.post_to_web()
+    url = block_grid.post_to_web()
 
     assert url == 'url'
     assert len(responses.calls) == 1
@@ -184,10 +197,7 @@ def test_BlockGrid_post_to_web():
 @mock.patch('sys.version_info', ('python', 'version'))
 @mock.patch.object(ipb, '__version__', 'ipb_version')
 @mock.patch.object(ipb, '_POST_URL', 'http://www.ipythonblocks.org/post_url')
-def test_ImageGrid_ul_post_to_web():
-    data = data_2x2()
-    grid = image_grid_ul(data)
-
+def test_ImageGrid_ul_post_to_web(data_2x2, image_grid_ul):
     expected = {
         'python_version': tuple(sys.version_info),
         'ipb_version': ipb.__version__,
@@ -195,10 +205,10 @@ def test_ImageGrid_ul_post_to_web():
         'code_cells': None,
         'secret': False,
         'grid_data': {
-            'lines_on': grid.lines_on,
-            'width': grid.width,
-            'height': grid.height,
-            'blocks': data
+            'lines_on': image_grid_ul.lines_on,
+            'width': image_grid_ul.width,
+            'height': image_grid_ul.height,
+            'blocks': data_2x2
         }
     }
     expected = json.dumps(expected)
@@ -207,7 +217,7 @@ def test_ImageGrid_ul_post_to_web():
                   body=json.dumps({'url': 'url'}).encode('utf-8'),
                   status=200, content_type='application/json')
 
-    url = grid.post_to_web()
+    url = image_grid_ul.post_to_web()
 
     assert url == 'url'
     assert len(responses.calls) == 1
@@ -219,15 +229,14 @@ def test_ImageGrid_ul_post_to_web():
 
 @responses.activate
 @mock.patch.object(ipb, '_GET_URL_PUBLIC', 'http://www.ipythonblocks.org/get_url/{0}')
-def test_BlockGrid_from_web():
-    data = data_2x2()
+def test_BlockGrid_from_web(data_2x2):
     grid_id = 'abc'
     get_url = ipb._GET_URL_PUBLIC.format(grid_id)
     resp = {
         'lines_on': True,
         'width': 2,
         'height': 2,
-        'blocks': data
+        'blocks': data_2x2
     }
 
     responses.add(responses.GET, get_url,
@@ -239,7 +248,7 @@ def test_BlockGrid_from_web():
     assert grid.height == resp['height']
     assert grid.width == resp['width']
     assert grid.lines_on == resp['lines_on']
-    assert grid._to_simple_grid() == data
+    assert grid._to_simple_grid() == data_2x2
 
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == get_url
@@ -247,15 +256,14 @@ def test_BlockGrid_from_web():
 
 @responses.activate
 @mock.patch.object(ipb, '_GET_URL_SECRET', 'http://www.ipythonblocks.org/get_url/{0}')
-def test_ImageGrid_ul_from_web():
-    data = data_2x2()
+def test_ImageGrid_ul_from_web(data_2x2):
     grid_id = 'abc'
     get_url = ipb._GET_URL_SECRET.format(grid_id)
     resp = {
         'lines_on': True,
         'width': 2,
         'height': 2,
-        'blocks': data
+        'blocks': data_2x2
     }
 
     responses.add(responses.GET, get_url,
@@ -268,7 +276,7 @@ def test_ImageGrid_ul_from_web():
     assert grid.height == resp['height']
     assert grid.width == resp['width']
     assert grid.lines_on == resp['lines_on']
-    assert grid._to_simple_grid() == data
+    assert grid._to_simple_grid() == data_2x2
     assert grid.origin == origin
 
     assert len(responses.calls) == 1
