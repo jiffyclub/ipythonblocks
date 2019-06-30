@@ -24,9 +24,21 @@ from functools import reduce
 from IPython.display import HTML, IFrame, display, clear_output
 from IPython.display import Image as ipyImage
 
-__all__ = ('Block', 'BlockGrid', 'Pixel', 'ImageGrid',
-           'InvalidColorSpec', 'ShapeMismatch', 'show_color',
-           'embed_colorpicker', 'clear', 'colors', 'fui_colors', '__version__')
+__all__ = (
+    'Block',
+    'BlockGrid',
+    'Pixel',
+    'ImageGrid',
+    'InvalidColorSpec',
+    'ShapeMismatch',
+    'show_color',
+    'show_color_triple',
+    'embed_colorpicker',
+    'clear',
+    'colors',
+    'fui_colors',
+    '__version__',
+)
 __version__ = '1.9.dev'
 
 _TABLE = ('<style type="text/css">'
@@ -93,6 +105,20 @@ def show_color(red, green, blue):
     div = ('<div style="height: 60px; min-width: 200px; '
            'background-color: {0}"></div>')
     display(HTML(div.format(_RGB.format(red, green, blue))))
+
+
+def show_color_triple(rgb_triple):
+    """
+    Show a given color in the IPython Notebook.
+
+    Parameters
+    ----------
+    rgb_triple : iterable
+        A Python iterable containing three integers in the range [0 - 255]
+        representing red, green, and blue colors.
+
+    """
+    return show_color(*rgb_triple)
 
 
 def embed_colorpicker():
