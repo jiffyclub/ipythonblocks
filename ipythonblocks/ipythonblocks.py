@@ -39,7 +39,7 @@ __all__ = (
     'fui_colors',
     '__version__',
 )
-__version__ = '1.9.dev'
+__version__ = '1.9.0'
 
 _TABLE = ('<style type="text/css">'
           'table.blockgrid {{border: none;}}'
