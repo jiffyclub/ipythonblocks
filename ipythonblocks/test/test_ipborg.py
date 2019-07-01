@@ -160,7 +160,6 @@ def test_load_simple_grid(test_grid, ref_grid, data_2x2):
 
 
 @responses.activate
-@mock.patch('sys.version_info', ('python', 'version'))
 @mock.patch.object(ipb, '__version__', 'ipb_version')
 @mock.patch.object(ipb, '_POST_URL', 'http://www.ipythonblocks.org/post_url')
 def test_BlockGrid_post_to_web(data_2x2, block_grid):
@@ -194,7 +193,6 @@ def test_BlockGrid_post_to_web(data_2x2, block_grid):
 
 
 @responses.activate
-@mock.patch('sys.version_info', ('python', 'version'))
 @mock.patch.object(ipb, '__version__', 'ipb_version')
 @mock.patch.object(ipb, '_POST_URL', 'http://www.ipythonblocks.org/post_url')
 def test_ImageGrid_ul_post_to_web(data_2x2, image_grid_ul):
