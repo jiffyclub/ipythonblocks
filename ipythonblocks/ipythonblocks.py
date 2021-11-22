@@ -30,7 +30,7 @@ from IPython.display import Image as ipyImage
 try:
     from collections.abc import Iterable
     from collections.abc import Sequence
-except:
+except ImportError:
     from collections import Iterable
     from collections import Sequence
 
