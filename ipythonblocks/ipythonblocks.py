@@ -24,6 +24,16 @@ from functools import reduce
 from IPython.display import HTML, IFrame, display, clear_output
 from IPython.display import Image as ipyImage
 
+# This statement is required for compatibility issues with Python 3.10.
+# Since that version, Iterable and Sequence must be imported from
+# collections.abc, instead of collections
+try:
+    from collections.abc import Iterable
+    from collections.abc import Sequence
+except ImportError:
+    from collections import Iterable
+    from collections import Sequence
+
 __all__ = (
     'Block',
     'BlockGrid',
@@ -153,7 +163,7 @@ def _flatten(thing, ignore_types=(str,)):
     Adapted from Beazley's Python Cookbook.
 
     """
-    if isinstance(thing, collections.Iterable) and \
+    if isinstance(thing, Iterable) and \
             not isinstance(thing, ignore_types):
         for i in thing:
             for x in _flatten(i):
@@ -340,7 +350,7 @@ class Block(object):
         if isinstance(other, Block):
             self.rgb = other.rgb
             self.size = other.size
-        elif isinstance(other, collections.Sequence) and len(other) == 3:
+        elif isinstance(other, Sequence) and len(other) == 3:
             self.rgb = other
         else:
             errmsg = (
@@ -569,7 +579,7 @@ class BlockGrid(object):
             else:
                 raise TypeError('Cannot assign grid to single block.')
 
-        elif isinstance(value, (collections.Iterable, Block)):
+        elif isinstance(value, (Iterable, Block)):
             for b in _flatten(thing):
                 b._update(value)
 
