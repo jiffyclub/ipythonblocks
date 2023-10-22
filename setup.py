@@ -1,14 +1,10 @@
-#!/usr/bin/env python
-from ez_setup import use_setuptools
-use_setuptools()
-
 from setuptools import setup, find_packages
 
 with open('README.rst') as f:
     long_description = f.read()
 
 setup(name='ipythonblocks',
-      version='1.9.dev',
+      version='1.9.1',
       description='Practice Python with colored grids in the IPython Notebook',
       long_description=long_description,
       author='Matt Davis',
